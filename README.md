@@ -3,7 +3,7 @@
 ![](https://img.shields.io/github/languages/top/vinitparekh17/Nodets)
 ![](https://img.shields.io/github/languages/count/vinitparekh17/Nodets?color=%23fff000)
 
-A Simple Node application boilerplate with typescript integration.
+The backend server of openai chatbot
 
 # Technologies
 <ul>
