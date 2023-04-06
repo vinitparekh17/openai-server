@@ -16,6 +16,9 @@
   "author": "Vinit Parekh",
   "license": "ISC",
   "dependencies": {
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^18.15.11",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",

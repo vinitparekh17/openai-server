@@ -1,8 +1,8 @@
 import userSchema from "../models/userSchema";
+import { Types } from "mongoose";
 import { Request, Response } from "express";
-import { openai } from "../app";
 
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { email } = req.body;
         if (!email) {
@@ -12,15 +12,25 @@ export const createUser = async (req: Request, res: Response) => {
         return res.status(400).json({ error: "User with this email already exists" });
 
     } catch (error) {
-        res.status(500).json({ error });
+        return res.status(500).json({ error });
     }
 }
 
-export const getUser = async (req: Request, res: Response) => {
+export const getUser = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const user = await userSchema.findById(req.params.id);
-        res.status(200).json({ user });
+        const { id } = req.params;
+        if (!Types.ObjectId.isValid(id)) {
+                return res.status(400).json({ error: "Invalid user id" });
+        }
+        const user = await userSchema.findById(id);
+        return res.status(200).json({
+            success: true,
+            user
+        });
     } catch (error) {
-        res.status(500).json({ error });
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
     }
 }

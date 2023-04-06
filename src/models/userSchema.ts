@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 
-type User = {
+interface User {
     userName: string;
     email: string;
     age: number;
