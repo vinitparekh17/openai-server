@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 
-interface User {
+interface IUser {
     userName: string;
     email: string;
     age: number;
@@ -8,7 +8,7 @@ interface User {
     hobbies: string[];
 }
 
-const userSchema = new Schema<User>({
+const userSchema = new Schema<IUser>({
     userName: { type: String, required: true },
     email: { type: String, required: true },
     age: { type: Number, required: true },
@@ -16,4 +16,4 @@ const userSchema = new Schema<User>({
     hobbies: { type: [String], required: true }
 });
 
-export default model<User>('User', userSchema);
+export default model<IUser>('User', userSchema);

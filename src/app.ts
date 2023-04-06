@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from "express";
 import { Configuration, OpenAIApi } from "openai";
+import { ErrorHandler } from "./utils/middleware";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import { connectDB } from './utils/database'
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use(cors({
   origin: "*",
 }));
+app.use(ErrorHandler.handle())
 connectDB();
 
 // openai initialization

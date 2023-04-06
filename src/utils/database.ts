@@ -1,14 +1,9 @@
-import { connect, Error, Mongoose } from 'mongoose'
+import { connect, ConnectOptions } from 'mongoose'
 
 export const connectDB = async () => {
     try {
-        let options = {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
+        let options: ConnectOptions = {
             autoIndex: false,
-            poolSize: 10,
             socketTimeoutMS: 30000,
             keepAlive: true,
         }
