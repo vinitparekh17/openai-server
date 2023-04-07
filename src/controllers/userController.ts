@@ -1,37 +1,23 @@
 import userSchema from "../models/userSchema";
-import { Types } from "mongoose";
 import { Request, Response } from "express";
+import DataProvider from "../utils/DbHelper";
+import { ErrorRes, SuccessRes } from "../utils/Responder";
 
-export const createUser = async (req: Request, res: Response): Promise<Response> => {
+let UserProvider = new DataProvider(userSchema);
+export const createUser = async (req: Request, res: Response): Promise<any> => {
     try {
-        const { email } = req.body;
-        let existUser = await userSchema.find({ email })
-        if (!existUser) {
-            const user = await userSchema.create(req.body);
-            res.status(201).json({ user });
-        }
-        return res.status(400).json({ error: "User with this email already exists" });
-
+        return UserProvider.saveData(res, req.body)
     } catch (error) {
-        return res.status(500).json({ error });
+        new ErrorRes(res, 500, "Internal server error!")
     }
 }
 
-export const getUser = async (req: Request, res: Response): Promise<Response> => {
+export const getUser = async (req: Request, res: Response): Promise<any> => {
     try {
         const { id } = req.params;
-        if (!Types.ObjectId.isValid(id)) {
-                return res.status(400).json({ error: "Invalid user id" });
-        }
-        const user = await userSchema.findById(id);
-        return res.status(200).json({
-            success: true,
-            user
-        });
+        let user = UserProvider.getDataByID(id)
+        new SuccessRes(res, 200, user)
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Internal server error"
-        });
+        new ErrorRes(res, 500, "Internal server error")
     }
 }

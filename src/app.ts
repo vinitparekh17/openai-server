@@ -1,10 +1,10 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import { Configuration, OpenAIApi } from "openai";
-import { sendJsonResponse } from "./utils/responseHandler";
 import { ErrorHandler } from "./utils/middleware";
 import cors from "cors";
 import * as dotenv from "dotenv";
-import { connectDB } from './utils/database'
+import { ErrorRes } from "./utils/Responder";
+import { connectDB } from './utils/Database'
 dotenv.config();
 
 const app: Application = express();
@@ -15,7 +15,7 @@ app.use(rateLimit({
   windowMs: 1 * 60 * 1000, // 1min
   max: 1,
   handler: (req: Request, res: Response, next: NextFunction) => {
-    sendJsonResponse(res, false, null, 429, "Too many request, try again later!")
+    new ErrorRes(res, 429, "Too many request, try again later!")
     next()
   }
 }))

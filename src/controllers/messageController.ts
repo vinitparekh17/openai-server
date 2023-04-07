@@ -1,12 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { openai } from "../app";
-import { sendJsonResponse } from "../utils/responseHandler";
-import { saveData } from "../utils/saveData";
-import DataProvider from "../utils/DataProvider";
+import DataProvider from "../utils/DbHelper";
 import messageSchema from "../models/messageSchema";
+import { ErrorRes, SuccessRes } from "../utils/Responder";
 
 let MyDataProvider = new DataProvider(messageSchema);
-export const generateResponse = async (req: Request, res: Response): Promise<Response> => {
+export const generateResponse = async (req: Request, res: Response): Promise<any> => {
     try {
         let { prompt } = req.body
         let { id } = req.params
@@ -18,28 +17,25 @@ export const generateResponse = async (req: Request, res: Response): Promise<Res
             n: 1,
             user: id
         })
-        if (!completion) {
-            return sendJsonResponse(res, false, null, 400, "Unable to generate response!")
-        }
+        if (!completion) new ErrorRes(res, 400, "Unable to generate response!")
         let answer = completion.data.choices[0].message.content
-        sendJsonResponse(res, true, answer, 200)
-        saveData('chat', res, {
+        new SuccessRes(res, 200, answer)
+        MyDataProvider.saveData(res, {
             prompt,
             answer,
             user: id
         })
     } catch (error) {
-        console.log(error);
-        return sendJsonResponse(res, false, null, 500, "Internal server error!")
+        new ErrorRes(res, 500, "Internal server error!")
     }
 }
 
 export async function getConversation(req: Request, res: Response, next: NextFunction ) {
     try {
         const data = MyDataProvider.getData();
-        if(!data) return sendJsonResponse(res, false, null, 404, "Data not found!")
-        return sendJsonResponse(res, true, data, 200)
+        if(!data) return new ErrorRes(res, 404, "Data not found!")
+        return new SuccessRes(res, 200, data)
     } catch (error) {
-        return sendJsonResponse(res, false, null, 500, "Internal server error!")
+        return new ErrorRes(res, 500, "Internal server error!")
     }
 }
