@@ -5,7 +5,8 @@ import { Request, Response } from "express";
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { email } = req.body;
-        if (!email) {
+        let existUser = await userSchema.find({ email })
+        if (!existUser) {
             const user = await userSchema.create(req.body);
             res.status(201).json({ user });
         }

@@ -1,5 +1,6 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
 import { Configuration, OpenAIApi } from "openai";
+import { sendJsonResponse } from "./utils/responseHandler";
 import { ErrorHandler } from "./utils/middleware";
 import cors from "cors";
 import * as dotenv from "dotenv";
@@ -7,8 +8,18 @@ import { connectDB } from './utils/database'
 dotenv.config();
 
 const app: Application = express();
+import { rateLimit } from "express-rate-limit";
 
 // middlewares
+app.use(rateLimit({
+  windowMs: 1 * 60 * 1000, // 1min
+  max: 1,
+  handler: (req: Request, res: Response, next: NextFunction) => {
+    sendJsonResponse(res, false, null, 429, "Too many request, try again later!")
+    next()
+  }
+}))
+app.get('/', (req, res) => res.send('<h1>Jai shree ram</h1>'))
 app.use(express.json());
 app.use(cors({
   origin: "*",
@@ -20,7 +31,7 @@ connectDB();
 const { OPENAI_API_KEY  } = process.env;
 const configOpenai = new Configuration({
   apiKey: OPENAI_API_KEY,
-  basePath: "https://api.openai.com/v1/chat/completions",
+  basePath: "https://api.openai.com/v1",
 });
 const openai = new OpenAIApi(configOpenai);
 // routes

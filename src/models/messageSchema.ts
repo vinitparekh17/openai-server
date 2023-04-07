@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 import { MessageDocument, MessageModel } from '../types/Message.types';
 
 const messageSchema = new Schema<MessageDocument>({
-    promt: {
+    prompt: {
         type: String,
         required: true,
     },

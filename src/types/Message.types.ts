@@ -1,7 +1,7 @@
 import { Model, Document, Schema } from "mongoose";
 
 interface Message {
-    promt: string;
+    prompt: string;
     answer: string;
     date: Date;
     user: Schema.Types.ObjectId;
