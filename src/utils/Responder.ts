@@ -1,14 +1,6 @@
 import { Response } from "express";
 import { ApiError } from "./ErrorHandler";
 
-export function sendJsonResponse(res: Response, success: boolean, data: any, statusCode?: number, errorMessage?: string) {
-  if (success) {
-    return res.status(statusCode || 200).json({ success, data });
-  } else {
-    throw new ApiError(404, errorMessage)
-  }
-}
-
 export class Responder {
   public response: Response; statusCode: number;
   constructor(res: Response, statusCode?: number) {
