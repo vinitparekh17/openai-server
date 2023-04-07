@@ -5,6 +5,7 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import { ErrorRes } from "./utils/Responder";
 import { connectDB } from './utils/Database'
+connectDB();
 dotenv.config();
 
 const app: Application = express();
@@ -25,7 +26,6 @@ app.use(cors({
   origin: "*",
 }));
 app.use(ErrorHandler.handle())
-connectDB();
 
 // openai initialization
 const { OPENAI_API_KEY  } = process.env;

@@ -1,5 +1,4 @@
 import { Response } from "express";
-import { ApiError } from "./ErrorHandler";
 
 export class Responder {
   public response: Response; statusCode: number;
