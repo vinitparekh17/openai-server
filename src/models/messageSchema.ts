@@ -1,15 +1,5 @@
-import { Schema, model, Model, Document } from 'mongoose';
-
-interface Message {
-    promt: string;
-    answer: string;
-    date: Date;
-    user: Schema.Types.ObjectId;
-};
-
-interface MessageDocument extends Message, Document {
-    _id: string
-}
+import { Schema, model } from 'mongoose';
+import { MessageDocument, MessageModel } from '../types/Message.types';
 
 const messageSchema = new Schema<MessageDocument>({
     promt: {
@@ -30,4 +20,4 @@ const messageSchema = new Schema<MessageDocument>({
     }
 });
 
-export default model<MessageDocument>('Message', messageSchema);
+export default model<MessageDocument, MessageModel>('Message', messageSchema);
