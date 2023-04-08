@@ -1,8 +1,9 @@
 import { Model, Document } from "mongoose";
 
-interface User {
+export interface User {
     userName: string;
     email: string;
+    password: string;
     age: number;
     qualification: string;
     hobbies: string[];

@@ -1,12 +1,13 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import { Configuration, OpenAIApi } from "openai";
-import { ErrorHandler } from "./utils/middleware";
+import { ErrorHandler } from "./utils/Middleware";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import { ErrorRes } from "./utils/Responder";
 import { connectDB } from './utils/Database'
-connectDB();
 dotenv.config();
+connectDB();
+
 
 const app: Application = express();
 import { rateLimit } from "express-rate-limit";
@@ -14,7 +15,7 @@ import { rateLimit } from "express-rate-limit";
 // middlewares
 app.use(rateLimit({
   windowMs: 1 * 60 * 1000, // 1min
-  max: 1,
+  max: 3,
   handler: (req: Request, res: Response, next: NextFunction) => {
     new ErrorRes(res, 429, "Too many request, try again later!")
     next()

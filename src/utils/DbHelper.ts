@@ -1,6 +1,7 @@
 import { Model, Types } from "mongoose"
 import { ErrorRes, SuccessRes } from "./Responder";
 import { Response } from "express";
+import bcrypt from "bcryptjs";
 
 export default class DataProvider {
     private model: Model<any>
@@ -11,6 +12,7 @@ export default class DataProvider {
     public async getData(): Promise<any[]> {
         try {
             const data = await this.model.find();
+            if(!data) return []
             return data;
         } catch (e) {
             console.log(e);
@@ -32,10 +34,10 @@ export default class DataProvider {
     public async saveData(res: Response, data: any): Promise<any> {
         try {
             if (data?.email) {
-                let savedUser = await this.model.find({ "email": data.email })
+                let savedUser = await this.model.find({ email: data.email })
                 if (!savedUser) {
-                    let user = await this.model.create(data)
-                    new SuccessRes(res, 201, user)
+                    let newUser = await this.model.create(data)
+                    new SuccessRes(res, 201, newUser)
                 }
                 new ErrorRes(res, 409, "User with this email already exists!")
             }
