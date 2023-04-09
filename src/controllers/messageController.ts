@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { openai } from "../app";
+import { openai } from "../utils/Openai";
 import DataProvider from "../utils/Dataprovider";
-import messageSchema from "../models/messageSchema";
+import messageSchema from "../models/Message.schema";
 import { ErrorRes, SuccessRes } from "../utils/Responders";
 
 let MessageProvider = new DataProvider(messageSchema);

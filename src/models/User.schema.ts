@@ -36,4 +36,8 @@ userSchema.methods.getForgotToken = function (): string {
     return forgotToken;
 }
 
+userSchema.methods.validatePassword = async function (usersAndPassward: string): Promise<Boolean> {
+    return await bcrypt.compare(usersAndPassward, this.password)
+}
+
 export default model<UserDocument, UserModel>('User', userSchema);

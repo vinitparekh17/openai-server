@@ -1,4 +1,4 @@
-import userSchema from '../models/userSchema';
+import userSchema from '../models/User.schema';
 import DataProvider from '../utils/Dataprovider';
 import crypto from 'node:crypto'
 import { Request, Response } from 'express';
