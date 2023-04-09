@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { openai } from "../app";
-import DataProvider from "../utils/DbHelper";
+import DataProvider from "../utils/Dataprovider";
 import messageSchema from "../models/messageSchema";
-import { ErrorRes, SuccessRes } from "../utils/Responder";
+import { ErrorRes, SuccessRes } from "../utils/Responders";
 
-let MyDataProvider = new DataProvider(messageSchema);
+let MessageProvider = new DataProvider(messageSchema);
 export const generateResponse = async (req: Request, res: Response): Promise<any> => {
     try {
         let { prompt } = req.body
@@ -20,11 +20,11 @@ export const generateResponse = async (req: Request, res: Response): Promise<any
         if (!completion) new ErrorRes(res, 400, "Unable to generate response!")
         let answer = completion.data.choices[0].message.content
         new SuccessRes(res, 200, answer)
-        MyDataProvider.saveData(res, {
-            prompt,
-            answer,
-            user: id
-        })
+        // MessageProvider.saveData(res, {
+        //     prompt,
+        //     answer,
+        //     user: id
+        // })
     } catch (error) {
         new ErrorRes(res, 500, "Internal server error!")
     }
@@ -32,7 +32,7 @@ export const generateResponse = async (req: Request, res: Response): Promise<any
 
 export async function getConversation(req: Request, res: Response, next: NextFunction ) {
     try {
-        const data = MyDataProvider.getData();
+        const data = MessageProvider.getData();
         if(!data) return new ErrorRes(res, 404, "Data not found!")
         return new SuccessRes(res, 200, data)
     } catch (error) {

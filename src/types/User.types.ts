@@ -4,6 +4,8 @@ export interface User {
     userName: string;
     email: string;
     password: string;
+    forgotpasstoken: string;
+    forgotpassexpire: Date;
     age: number;
     qualification: string;
     hobbies: string[];

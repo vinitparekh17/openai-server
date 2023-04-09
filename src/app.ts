@@ -1,9 +1,9 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import { Configuration, OpenAIApi } from "openai";
-import { ErrorHandler } from "./utils/Middleware";
+import { ErrorHandler } from "./utils/Middlewaresl";
 import cors from "cors";
 import * as dotenv from "dotenv";
-import { ErrorRes } from "./utils/Responder";
+import { ErrorRes } from "./utils/Responders";
 import { connectDB } from './utils/Database'
 dotenv.config();
 connectDB();

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ApiError } from "./ErrorHandler";
+import { ApiError } from "./ErrorHandlers";
 
 export class ErrorHandler {
     static handle = () => {
