@@ -39,7 +39,7 @@ const openai = new OpenAIApi(configOpenai);
 import userRoutes from "./routes/user";
 import chatRoutes from "./routes/chat";
 
-app.use("/api", userRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api", chatRoutes);
 app.use('*', (req: Request, res: Response) => {
   const err = Error(`Requested path: ${req.path} not found!`);

@@ -1,9 +1,10 @@
-import userSchema from "../models/userSchema";
-import { Request, Response } from "express";
-import DataProvider from "../utils/Dataprovider";
-import { ErrorRes, SuccessRes } from "../utils/Responders";
-import EmailService from "../utils/EmailService";
-import EmailFormat from "../types/Email.types";
+import userSchema from '../models/userSchema';
+import DataProvider from '../utils/Dataprovider';
+import crypto from 'node:crypto'
+import { Request, Response } from 'express';
+import { ErrorRes, SuccessRes } from '../utils/Responders';
+import EmailService from '../utils/EmailService';
+import EmailFormat from '../types/Email.types';
 
 let UserProvider = new DataProvider(userSchema);
 export const signup = async (req: Request, res: Response): Promise<any> => {
@@ -50,5 +51,30 @@ export const forgotPassword = async (req: Request, res: Response): Promise<any> 
     } catch (error) {
         console.log(error);
         return new ErrorRes(res, 500, 'Internal server error!')
+    }
+}
+
+export const passwardReset =async (req: Request, res: Response) => {
+    try {
+        const {token} = req.params
+        const encryptedToken = crypto
+            .createHash("sha256")
+            .update(token)
+            .digest("hex")
+        // $gt is the classic mongodb query with refers to greater then 
+        const foundUser = await userSchema.findOne({
+            encryptedToken,
+            forgotPasswordExpiry: {
+                $gt: Date.now()
+            }
+        })
+        if(!foundUser) return new ErrorRes(res, 404, 'Token is expired!')
+        const { password } = req.body
+        foundUser.password = password;
+        foundUser.forgotpasstoken = undefined;
+        foundUser.forgotpassexpire = undefined;
+        await foundUser.save();
+    } catch (error) {
+        console.log(error);
     }
 }
