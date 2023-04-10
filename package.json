@@ -16,6 +16,7 @@
   "author": "Vinit Parekh",
   "license": "ISC",
   "dependencies": {
+    "@types/morgan": "^1.9.4",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -23,8 +24,10 @@
     "express-rate-limit": "^6.7.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.3",
+    "morgan": "^1.10.0",
     "nodemailer": "^6.9.1",
-    "openai": "^3.2.1"
+    "openai": "^3.2.1",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
@@ -33,6 +36,7 @@
     "@types/mongoose": "^5.11.97",
     "@types/node": "^18.15.11",
     "@types/nodemailer": "^6.4.7",
+    "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^5.45.1",
     "@typescript-eslint/parser": "^5.45.1",
     "eslint": "^8.29.0",

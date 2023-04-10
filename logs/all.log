@@ -1,0 +1,54 @@
+2023-04-10 15:58:58:5858 [31merror[39m: [31mThis is an error log[39m
+2023-04-10 15:58:58:5858 [33mwarn[39m: [33mThis is a warn log[39m
+2023-04-10 15:58:58:5858 [32minfo[39m: [32mThis is a info log[39m
+2023-04-10 15:58:58:5858 [35mhttp[39m: [35mThis is a http log[39m
+2023-04-10 15:58:58:5858 [37mdebug[39m: [37mThis is a debug log[39m
+2023-04-10 16:00:12:012 [37mdebug[39m: [37mServer started on port 8080[39m
+2023-04-10 16:11:17:1117 [37mdebug[39m: [37mServer started on port 8080[39m
+2023-04-10 16:11:24:1124 [31merror[39m: [31mThis is an error log[39m
+2023-04-10 16:11:24:1124 [33mwarn[39m: [33mThis is a warn log[39m
+2023-04-10 16:11:24:1124 [32minfo[39m: [32mThis is a info log[39m
+2023-04-10 16:11:24:1124 [35mhttp[39m: [35mThis is a http log[39m
+2023-04-10 16:11:24:1124 [37mdebug[39m: [37mThis is a debug log[39m
+2023-04-10 16:11:58:1158 [31merror[39m: [31mThis is an error log[39m
+2023-04-10 16:11:58:1158 [33mwarn[39m: [33mThis is a warn log[39m
+2023-04-10 16:11:58:1158 [32minfo[39m: [32mThis is a info log[39m
+2023-04-10 16:11:58:1158 [35mhttp[39m: [35mThis is a http log[39m
+2023-04-10 16:11:58:1158 [37mdebug[39m: [37mThis is a debug log[39m
+2023-04-10 16:12:20:1220 [31merror[39m: [31mThis is an error log[39m
+2023-04-10 16:12:20:1220 [33mwarn[39m: [33mThis is a warn log[39m
+2023-04-10 16:12:20:1220 [32minfo[39m: [32mThis is a info log[39m
+2023-04-10 16:12:20:1220 [35mhttp[39m: [35mThis is a http log[39m
+2023-04-10 16:12:20:1220 [37mdebug[39m: [37mThis is a debug log[39m
+2023-04-10 16:12:32:1232 [37mdebug[39m: [37mServer started on port 8080[39m
+2023-04-10 16:12:34:1234 [31merror[39m: [31mThis is an error log[39m
+2023-04-10 16:12:34:1234 [33mwarn[39m: [33mThis is a warn log[39m
+2023-04-10 16:12:34:1234 [32minfo[39m: [32mThis is a info log[39m
+2023-04-10 16:12:34:1234 [35mhttp[39m: [35mThis is a http log[39m
+2023-04-10 16:12:34:1234 [37mdebug[39m: [37mThis is a debug log[39m
+2023-04-10 16:12:51:1251 [37mdebug[39m: [37mServer started on port 8080[39m
+2023-04-10 16:12:55:1255 [31merror[39m: [31mThis is an error log[39m
+2023-04-10 16:12:55:1255 [33mwarn[39m: [33mThis is a warn log[39m
+2023-04-10 16:12:55:1255 [32minfo[39m: [32mThis is a info log[39m
+2023-04-10 16:12:55:1255 [35mhttp[39m: [35mThis is a http log[39m
+2023-04-10 16:12:55:1255 [37mdebug[39m: [37mThis is a debug log[39m
+2023-04-10 16:15:04:154 [31merror[39m: [31mCannot read properties of undefined (reading 'use')[39m
+2023-04-10 16:15:04:154 [37mdebug[39m: [37mServer started on port 8080[39m
+2023-04-10 16:16:05:165 [31merror[39m: [31mThis is an error log[39m
+2023-04-10 16:16:05:165 [33mwarn[39m: [33mThis is a warn log[39m
+2023-04-10 16:16:05:165 [32minfo[39m: [32mThis is a info log[39m
+2023-04-10 16:16:05:165 [35mhttp[39m: [35mThis is a http log[39m
+2023-04-10 16:16:05:165 [37mdebug[39m: [37mThis is a debug log[39m
+2023-04-10 16:17:06:176 [31merror[39m: [31mCannot read properties of undefined (reading 'use')[39m
+2023-04-10 16:17:06:176 [37mdebug[39m: [37mServer started on port 8080[39m
+2023-04-10 16:18:09:189 [37mdebug[39m: [37mServer started on port 8080[39m
+2023-04-10 16:18:14:1814 [31merror[39m: [31mThis is an error log[39m
+2023-04-10 16:18:14:1814 [33mwarn[39m: [33mThis is a warn log[39m
+2023-04-10 16:18:14:1814 [32minfo[39m: [32mThis is a info log[39m
+2023-04-10 16:18:14:1814 [35mhttp[39m: [35mThis is a http log[39m
+2023-04-10 16:18:14:1814 [37mdebug[39m: [37mThis is a debug log[39m
+2023-04-10 16:18:14:1814 [35mhttp[39m: [35mGET /logger 304 - - 6.368 ms[39m
+[35m[39m
+2023-04-10 16:18:54:1854 [37mdebug[39m: [37mServer started on port 8080[39m
+2023-04-10 16:18:54:1854 [35mhttp[39m: [35mGET / 404 1123 - 3.599 ms[39m
+[35m[39m

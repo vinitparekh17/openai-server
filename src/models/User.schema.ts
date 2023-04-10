@@ -29,7 +29,7 @@ userSchema.pre<UserDocument>('save', async function (this: UserDocument, next: N
 })
 
 // genarates token and expiry and saves it
-userSchema.methods.getForgotToken = function (): string {
+userSchema.methods.getForgotToken = function () {
     const forgotToken = crypto.randomBytes(20).toString('hex');
     this.forgotpasstoken = forgotToken;
     this.forgotpassexpire = Date.now() + 60 * 1000

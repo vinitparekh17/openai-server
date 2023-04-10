@@ -1,15 +1,14 @@
-import app from '../app';
-import Middleware from './Middlewares'
+import { app } from '../app';
 import Mongodb from './Database';
+import Logger from './Logger';
 import { PORT } from '../config';
 
 export default {
     start: () => {
         try {
             Mongodb.init()
-            Middleware.init()
             app.listen(PORT, () => {
-                console.log(`Server started on port ${process.env.PORT}`);
+                Logger.debug(`Server started on port ${process.env.PORT}`);
             });
         } catch (error) {
             console.log(error);   
