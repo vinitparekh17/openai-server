@@ -5,7 +5,7 @@
   "main": "./dist/app.js",
   "scripts": {
     "start": "tsc && node dist/app.js",
-    "dev": "tsc && nodemon --exec node dist/index.js",
+    "dev": "tsc && nodemon dist/index.js",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write ./src/**/*.{ts,js} && prettier --write ."
   },
