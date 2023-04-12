@@ -16,6 +16,16 @@ export default class DataProvider {
         }
     }
 
+    public async getDataBySearch(key: string, value: string): Promise<any[]> {
+        try {
+            const data = await this.model.find({key: value});
+            if(!data) return []
+            return data;
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     public async getDataByID(id: string): Promise<any | null> {
         try {
             if (!Types.ObjectId.isValid(id)) {
@@ -36,13 +46,4 @@ export default class DataProvider {
             console.log(error);
         }
     }
-
-    // public async saveData(res: Response, data: any): Promise<any> {
-    //     try {
-    //         let newChats = await this.model.create(data)
-    //         if (!newChats) return new ErrorRes(res, 500, "Internal server issue while message saving!")
-    //     } catch (e: any) {
-    //         console.log(e);
-    //     }
-    // }
 }

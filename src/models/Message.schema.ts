@@ -4,11 +4,11 @@ import { MessageDocument, MessageModel } from '../types/Message.types';
 const messageSchema = new Schema<MessageDocument>({
     prompt: {
         content: { type: String, required: true },
-        timeStamp: Date.now()
+        timeStamp: { type: Date, default: Date.now() }
     },
     answer: {
         content: { type: String, required: true },
-        timestamp: Date.now()
+        timeStamp: { type: Date, default: Date.now() }
     },
     date: {
         type: Date,

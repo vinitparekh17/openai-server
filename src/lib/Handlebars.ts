@@ -75,7 +75,7 @@ const source = `<!DOCTYPE html>
         }
 
         .username {
-            color: #7a7a7a;
+            color: #c7c7c7;
             font-size: 12px;
             margin: 0;
             padding: 0;
@@ -89,7 +89,7 @@ const source = `<!DOCTYPE html>
 
         .chat .message .msg-time {
             font-size: 12px;
-            color: #999;
+            color: #c7c7c7;
             margin: 0;
             padding: 3px 0 0 0;
             text-align: right;
@@ -132,7 +132,6 @@ const source = `<!DOCTYPE html>
 
             .title time {
                 font-size: 12px;
-                color: #fff;
                 margin: 0;
                 padding: 0;
                 margin-left: auto;
@@ -166,13 +165,14 @@ const source = `<!DOCTYPE html>
                     <div class="message received">
                         <p class="username">Chat-bot</p>
                         <p class="user-content">{{answer.content}}</p>
-                        <p class="msg-time">{{formattedTime}}</p>
+                        <p class="msg-time">{{answer.formattedTime}}</p>
                     </div>
-                {{else}}
+                {{/if}}
+                {{#if prompt}}
                     <div class="message sent">
-                        <p class="username">{{username}}</p>
+                        <p class="username">{{prompt.username}}</p>
                         <p class="user-content">{{prompt.content}}</p>
-                        <p class="msg-time">{{formattedTime}}</p>
+                        <p class="msg-time">{{prompt.formattedTime}}</p>
                     </div>
                 {{/if}}
             {{/each}}
@@ -192,7 +192,7 @@ const source = `<!DOCTYPE html>
                     });
                     sent.forEach(message => {
                         message.style.backgroundColor = '#007460';
-                        message.style.color = 'rgb(200, 200, 200)';
+                        message.style.color = '#fff';
                     });
                     break;
                 case 'light':
@@ -215,20 +215,23 @@ const source = `<!DOCTYPE html>
 
 </html>`
 
-const template = Handlebars.compile(source);
-// const demoData = {
+export default Handlebars.compile(source);
+// let demoData = {
 //     username: 'John Doe',
 //     themeColor: 'dark',
 //     userAvatarUrl: 'https://plus.unsplash.com/premium_photo-1669951581968-73b5b71face3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60',
 //     formattedTime: '12:00 PM',
-//     prompt: {
-//         content: 'Hello, julie',
-//         timestamp: Date.now()
-//     },
-//     answer: {
-//         content: 'Hey, May I help you?',
-//         timestamp: Date.now()
-//     }
+//     messages: [
+//         {
+//             answer: {
+//                 content: "Yes, im here",
+//                 formattedTime: Date.now().toLocaleString()
+//             },
+//             prompt: {
+//                 username: "Julie",
+//                 content: "Hey, testing",
+//                 formattedTime: Date.now().toLocaleString()
+//             }
+//         }
+//     ]
 // }
-
-// export default template(demoData);

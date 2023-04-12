@@ -13,27 +13,23 @@ export const generateResponse = async (req: Request, res: Response): Promise<any
             model: "gpt-3.5-turbo",
             max_tokens: 200,
             temperature: 0.7,
-            messages: [{"role": "user", "content": prompt}],
+            messages: [{ "role": "user", "content": prompt }],
             n: 1,
-            user: id
+            user: id,
+            stream: true
         })
         if (!completion) new ErrorRes(res, 400, "Unable to generate response!")
         let answer = completion.data.choices[0].message.content
         new SuccessRes(res, 200, answer)
-        // MessageProvider.saveData(res, {
-        //     prompt,
-        //     answer,
-        //     user: id
-        // })
     } catch (error) {
         new ErrorRes(res, 500, "Internal server error!")
     }
 }
 
-export async function getConversation(req: Request, res: Response, next: NextFunction ) {
+export async function getConversation(req: Request, res: Response, next: NextFunction) {
     try {
         const data = MessageProvider.getData();
-        if(!data) return new ErrorRes(res, 404, "Data not found!")
+        if (!data) return new ErrorRes(res, 404, "Data not found!")
         return new SuccessRes(res, 200, data)
     } catch (error) {
         return new ErrorRes(res, 500, "Internal server error!")
