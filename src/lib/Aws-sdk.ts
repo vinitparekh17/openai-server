@@ -1,10 +1,16 @@
 import * as AWS from 'aws-sdk';
-import * as async from 'async';
+import Logger from '../utils/Logger';
+import { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from '../config';
 
-const S3: AWS.S3 = new AWS.S3({
-    apiVersion: ''
-})
+AWS.config.update({ region: 'ap-south-1' })
+new AWS.Credentials(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
 
-AWS.config.update({
-    region: ''
-})
+export const AWS3 = () => {
+    try {
+        return new AWS.S3({
+            apiVersion: '2006-03-01'
+        })
+    } catch (error) {
+        Logger.error("s3 error "+error)
+    }
+}

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { openai } from "../utils/Openai";
+import { openai } from "../lib/Openai";
 import DataProvider from "../utils/Dataprovider";
 import messageSchema from "../models/Message.schema";
 import { ErrorRes, SuccessRes } from "../utils/Responders";

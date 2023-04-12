@@ -3,6 +3,7 @@ import Middleware from './utils/Middlewares';
 import userRoutes from "./routes/user";
 import chatRoutes from "./routes/chat";
 import Logger from "./utils/Logger";
+
 export const app: Application = express();
 Middleware.init()
 
