@@ -1,4 +1,4 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const { PORT, MONGO_URI, OPENAI_API_KEY, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = process.env;
+export const { PORT, MONGO_URI, OPENAI_API_KEY, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, REGION } = process.env;
