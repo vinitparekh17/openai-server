@@ -3,7 +3,7 @@ import DataProvider from '../utils/Dataprovider';
 import crypto from 'node:crypto'
 import { Request, Response } from 'express';
 import { ErrorRes, SuccessRes } from '../utils/Responders';
-import EmailService from '../utils/EmailService';
+import EmailService from '../lib/EmailService';
 import EmailFormat from '../types/Email.types';
 
 let UserProvider = new DataProvider(userSchema);

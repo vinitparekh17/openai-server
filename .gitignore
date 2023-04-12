@@ -3,3 +3,4 @@ dist
 .env
 logs
 .git
+src/lib/index.html

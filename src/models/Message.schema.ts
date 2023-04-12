@@ -3,12 +3,12 @@ import { MessageDocument, MessageModel } from '../types/Message.types';
 
 const messageSchema = new Schema<MessageDocument>({
     prompt: {
-        type: String,
-        required: true,
+        content: { type: String, required: true },
+        timeStamp: Date.now()
     },
     answer: {
-        type: String,
-        required: true
+        content: { type: String, required: true },
+        timestamp: Date.now()
     },
     date: {
         type: Date,

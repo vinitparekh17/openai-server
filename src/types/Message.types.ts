@@ -1,8 +1,13 @@
 import { Model, Document, Schema } from "mongoose";
 
+interface MessageFormat {
+    content: string;
+    timestamp: Date;
+}
+
 interface Message {
-    prompt: string;
-    answer: string;
+    prompt: MessageFormat;
+    answer: MessageFormat;
     date: Date;
     user: Schema.Types.ObjectId;
 };
