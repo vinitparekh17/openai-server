@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { openai } from "../lib/Openai";
-import { io } from "../lib/Socket";
 import DataProvider from "../utils/Dataprovider";
 import messageSchema from "../models/Message.schema";
 import { ErrorRes, SuccessRes } from "../utils/Responders";
 import Logger from "../utils/Logger";
+import { io } from "../lib/Socket";
 
 let MessageProvider = new DataProvider(messageSchema);
 export const generateResponse = async (req: Request, res: Response): Promise<any> => {

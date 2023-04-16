@@ -3,6 +3,7 @@ import { app } from '../app';
 import Mongodb from './Database';
 import Logger from './Logger';
 import { PORT } from '../config';
+require('../lib/Socket');
 
 export const server: Server = require('http').createServer(app);
 export default {
