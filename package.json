@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "A chatbot based on CHATGPT",
   "main": "./dist/app.js",
+  "entry": "./src/index.ts",
   "scripts": {
-    "start": "tsc && node dist/app.js",
-    "dev": "tsc && nodemon dist/index.js",
+    "start": "tsc && node dist/index.js",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write ./src/**/*.{ts,js} && prettier --write ."
   },
