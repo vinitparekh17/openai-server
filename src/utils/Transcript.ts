@@ -1,6 +1,6 @@
 import Template from '../lib/Handlebars'
 import Logger from "./Logger";
-import MessageSchema from '../models/Message.schema';
+import MessageSchema from '../models/Message.Schema';
 import DataProvider from './Dataprovider';
 
 let MessageProvider = new DataProvider(MessageSchema);

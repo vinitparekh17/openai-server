@@ -1,7 +1,9 @@
 import { model, Schema } from 'mongoose';
 import type { NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import crypto from 'node:crypto';
+import { JWT_SECRET, JWT_EXPIRY } from '../config';
 import type { UserDocument, UserModel } from '../types/User';
 
 const userSchema = new Schema<UserDocument>({
@@ -13,7 +15,7 @@ const userSchema = new Schema<UserDocument>({
 });
 
 userSchema.pre<UserDocument>('save', async function (this: UserDocument, next: NextFunction) {
-    if(!this.isModified('password')) return next()
+    if (!this.isModified('password')) return next()
     try {
         const salt = await bcrypt.genSalt(10)
         const hash = await bcrypt.hash(this.password, salt)
@@ -25,16 +27,29 @@ userSchema.pre<UserDocument>('save', async function (this: UserDocument, next: N
     }
 })
 
-// genarates token and expiry and saves it
-userSchema.methods.getForgotToken = function () {
-    const forgotToken = crypto.randomBytes(20).toString('hex');
-    this.forgotpasstoken = forgotToken;
-    this.forgotpassexpire = Date.now() + 60 * 1000
-    return forgotToken;
+userSchema.methods = {
+    getForgotToken: function (): string {
+        const forgotToken = crypto.randomBytes(20).toString('hex');
+        this.forgotpasstoken = forgotToken;
+        this.forgotpassexpire = Date.now() + 60 * 1000;
+        return forgotToken;
+    },
+
+    validatePassword: async function (usersAndPassward: string): Promise<Boolean> {
+        return await bcrypt.compare(usersAndPassward, this.password);
+    },
+
+    getJWT: function (): string {
+        return jwt.sign({ _id: this._id }, JWT_SECRET, {
+            expiresIn: JWT_EXPIRY
+        });
+    }
 }
 
-userSchema.methods.validatePassword = async function (usersAndPassward: string): Promise<Boolean> {
-    return await bcrypt.compare(usersAndPassward, this.password)
+userSchema.statics = {
+    findByEmail: async function (email: string): Promise<object> {
+        return await this.findOne({ email })
+    }
 }
 
 export default model<UserDocument, UserModel>('User', userSchema);

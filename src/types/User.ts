@@ -1,6 +1,6 @@
 import type { Model, Document } from "mongoose";
 
-export interface User {
+interface User extends Document {
     userName: string;
     email: string;
     password: string;
@@ -8,7 +8,13 @@ export interface User {
     forgotpassexpire: Date;
 }
 
-export interface UserModel extends Model<UserDocument> {}
 export interface UserDocument extends User, Document {
-    _id: string
+    getForgotToken(): string;
+    validatePassword(): Promise<boolean>;
+    getJWT(): string;
+}
+
+export interface UserModel extends Model<UserDocument> {
+    // static methods goes here like find by email etc.
+    findByEmail(): Promise<object>
 }

@@ -1,33 +1,26 @@
 import { Response } from "express";
+import { UserDocument } from "../types/User";
 
-export class Responder {
-  public response: Response; statusCode: number;
-  constructor(res: Response, statusCode?: number) {
-    this.response = res;
-    this.statusCode = statusCode;
+export class Success {
+  static send(res: Response, statusCode: number, data: object | string) {
+    return res.status(statusCode).json({ success: true, data: data || null });
   }
 }
 
-export class SuccessRes extends Responder {
-  public data: any;
-  constructor(res: Response, statusCode: number, data: any) {
-    super(res, statusCode)
-    this.data = data
-    this.statusCode = statusCode | 200
-  }
-  send() {
-    return this.response.status(this.statusCode).json({ success: true, data: this.data || null });
+export class Err {
+  static send(res: Response, statusCode: number, message: string) {
+    return res.status(statusCode).json({ success: false, message });
   }
 }
 
-export class ErrorRes extends Responder {
-  public message: string;
-  constructor(res: Response, statusCode: number, message: string) {
-    super(res, statusCode)
-    this.message = message
-    this.statusCode = statusCode | 404
-  }
-  send() {
-    return this.response.status(this.statusCode).json({ success: false, message: this.message });
+export class Cookie {
+  static send(res: Response, user: UserDocument, statusCode: number) {
+    let token = user.getJWT()
+    return res.status(statusCode).cookie('auth-token', token, {
+      expires: new Date(
+        Date.now() + 3 + 24 + 60 + 60 * 1000
+      ),
+      httpOnly: true
+    })
   }
 }

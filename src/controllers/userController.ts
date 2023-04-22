@@ -1,9 +1,9 @@
 import crypto from 'node:crypto'
 import type { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import userSchema from '../models/User.schema';
+import userSchema from '../models/User.Schema';
 import DataProvider from '../utils/Dataprovider';
-import { ErrorRes, SuccessRes } from '../utils/Responders';
+import { Cookie, Err, Success } from '../utils/Responders';
 import EmailService from '../lib/EmailService';
 import { EmailFormat } from '../types/index.type';
 import Logger from '../utils/Logger';
@@ -14,18 +14,18 @@ export const signUp = async (req: Request, res: Response): Promise<Response> => 
         const { firstName, lastName, email, password } = req.body;
         let savedUser = await userSchema.findOne({ email })
         if (!savedUser) {
-            let newUser = {
+            let newUser = await userSchema.create({
                 userName: `${firstName} ${lastName}`,
                 email,
                 password
-            }
-            await userSchema.create(newUser);
-            return new SuccessRes(res, 201, newUser).send()
+            });
+            newUser.getJWT();
+            return Cookie.send(res, newUser, 201);
         }
-        return new ErrorRes(res, 409, "User with this email already exists! ").send()
+        return Err.send(res, 409, "User with this email already exists! ")
     } catch (error) {
         Logger.error(error)
-        new ErrorRes(res, 500, "Internal server error!").send()
+        Err.send(res, 500, "Internal server error!")
     }
 }
 
@@ -35,20 +35,21 @@ export const signIn = async (req: Request, res: Response): Promise<Response> => 
     if (existUser) {
         let matchPass = await bcrypt.compare(password, existUser.password)
         if (matchPass) {
-            return new SuccessRes(res, 200, existUser).send()
+            return Cookie.send(res, existUser, 200);
         }
-        return new ErrorRes(res, 400, "Invalid credentials").send()
+        return Err.send(res, 400, "Invalid credentials")
     }
-    return new ErrorRes(res, 400, "Invalid credentials").send()
+    return Err.send(res, 400, "Invalid credentials")
 }
 
 export const getUser = async (req: Request, res: Response): Promise<any> => {
     try {
         const { id } = req.params;
         let user = UserProvider.getDataByID(id)
-        new SuccessRes(res, 200, user)
+        Success.send(res, 200, user)
     } catch (error) {
-        new ErrorRes(res, 500, "Internal server error")
+        Logger.error(error)
+        Err.send(res, 500, "Internal server error")
     }
 }
 
@@ -57,7 +58,7 @@ export const forgotPassword = async (req: Request, res: Response): Promise<any> 
         let { email } = req.body;
         let existUser = await UserProvider.getByEmail(email);
         if (!existUser) {
-            return new ErrorRes(res, 404, 'User with this email does not exists!')
+            return Err.send(res, 404, 'User with this email does not exists!')
         }
         let token = existUser.getForgotToken();
         await existUser.save({ validateBeforeSave: false });
@@ -69,10 +70,10 @@ export const forgotPassword = async (req: Request, res: Response): Promise<any> 
             html: `Click here to change your password! \n\n<center><a href="${url}" ><button>FORGOT PASSWORD</button></a><center>`
         }
         let emailStatus = new EmailService(options).sendMail();
-        return emailStatus ? new SuccessRes(res, 201, 'Email has been sent to you') : new ErrorRes(res, 401, 'Unable to send email!')
+        return emailStatus ? Success.send(res, 201, 'Email has been sent to you') : Err.send(res, 401, 'Unable to send email!')
     } catch (error) {
         console.log(error);
-        return new ErrorRes(res, 500, 'Internal server error!')
+        return Err.send(res, 500, 'Internal server error!')
     }
 }
 
@@ -90,7 +91,7 @@ export const passwardReset = async (req: Request, res: Response) => {
                 $gt: Date.now()
             }
         })
-        if (!foundUser) return new ErrorRes(res, 404, 'Token is expired!')
+        if (!foundUser) return Err.send(res, 404, 'Token is expired!')
         const { password } = req.body
         foundUser.password = password;
         foundUser.forgotpasstoken = undefined;

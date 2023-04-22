@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
 import { openai } from "../lib/Openai";
 import DataProvider from "../utils/Dataprovider";
-import messageSchema from "../models/Message.schema";
-import { ErrorRes, SuccessRes } from "../utils/Responders";
+import messageSchema from "../models/Message.Schema";
+import { Err, Success } from "../utils/Responders";
 import Logger from "../utils/Logger";
 import { io } from "../lib/Socket";
 
@@ -34,16 +34,16 @@ export const generateResponse = async (req: Request, res: Response): Promise<any
         })
 
     } catch (error) {
-        new ErrorRes(res, 500, "Internal server error!")
+        Err.send(res, 500, "Internal server error!")
     }
 }
 
 export async function getConversation(req: Request, res: Response, next: NextFunction) {
     try {
         const data = MessageProvider.getData();
-        if (!data) return new ErrorRes(res, 404, "Data not found!")
-        return new SuccessRes(res, 200, data)
+        if (!data) return Err.send(res, 404, "Data not found!")
+        return Success.send(res, 200, data)
     } catch (error) {
-        return new ErrorRes(res, 500, "Internal server error!")
+        return Err.send(res, 500, "Internal server error!")
     }
 }
