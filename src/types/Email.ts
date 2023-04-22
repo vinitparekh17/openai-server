@@ -1,4 +1,4 @@
-export default interface EmailFormat{
+export interface EmailFormat {
     to: string;
     suject: string;
     content: string;

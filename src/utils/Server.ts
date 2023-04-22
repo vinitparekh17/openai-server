@@ -1,4 +1,4 @@
-import { Server } from 'node:http';
+import type { Server } from 'node:http';
 import { app } from '../app';
 import Mongodb from './Database';
 import Logger from './Logger';

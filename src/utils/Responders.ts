@@ -15,7 +15,7 @@ export class SuccessRes extends Responder {
     this.data = data
     this.statusCode = statusCode | 200
   }
-  success() {
+  send() {
     return this.response.status(this.statusCode).json({ success: true, data: this.data || null });
   }
 }
@@ -27,7 +27,7 @@ export class ErrorRes extends Responder {
     this.message = message
     this.statusCode = statusCode | 404
   }
-  success() {
-    return this.response.status(this.statusCode).json({ success: false, message: this.message});
+  send() {
+    return this.response.status(this.statusCode).json({ success: false, message: this.message });
   }
 }

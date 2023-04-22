@@ -1,23 +1,45 @@
+import crypto from 'node:crypto'
+import type { Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
 import userSchema from '../models/User.schema';
 import DataProvider from '../utils/Dataprovider';
-import crypto from 'node:crypto'
-import { Request, Response } from 'express';
 import { ErrorRes, SuccessRes } from '../utils/Responders';
 import EmailService from '../lib/EmailService';
-import EmailFormat from '../types/Email.types';
+import { EmailFormat } from '../types/index.type';
+import Logger from '../utils/Logger';
 
 let UserProvider = new DataProvider(userSchema);
-export const signup = async (req: Request, res: Response): Promise<any> => {
+export const signUp = async (req: Request, res: Response): Promise<Response> => {
     try {
-        let savedUser = await userSchema.find({ email: req.body.email })
+        const { firstName, lastName, email, password } = req.body;
+        let savedUser = await userSchema.findOne({ email })
         if (!savedUser) {
-            let newUser = await userSchema.create(req.body)
-            new SuccessRes(res, 201, newUser)
+            let newUser = {
+                userName: `${firstName} ${lastName}`,
+                email,
+                password
+            }
+            await userSchema.create(newUser);
+            return new SuccessRes(res, 201, newUser).send()
         }
-        new ErrorRes(res, 409, "User with this email already exists!")
+        return new ErrorRes(res, 409, "User with this email already exists! ").send()
     } catch (error) {
-        new ErrorRes(res, 500, "Internal server error!")
+        Logger.error(error)
+        new ErrorRes(res, 500, "Internal server error!").send()
     }
+}
+
+export const signIn = async (req: Request, res: Response): Promise<Response> => {
+    const { email, password } = req.body;
+    const existUser = await userSchema.findOne({ email })
+    if (existUser) {
+        let matchPass = await bcrypt.compare(password, existUser.password)
+        if (matchPass) {
+            return new SuccessRes(res, 200, existUser).send()
+        }
+        return new ErrorRes(res, 400, "Invalid credentials").send()
+    }
+    return new ErrorRes(res, 400, "Invalid credentials").send()
 }
 
 export const getUser = async (req: Request, res: Response): Promise<any> => {
@@ -54,9 +76,9 @@ export const forgotPassword = async (req: Request, res: Response): Promise<any> 
     }
 }
 
-export const passwardReset =async (req: Request, res: Response) => {
+export const passwardReset = async (req: Request, res: Response) => {
     try {
-        const {token} = req.params
+        const { token } = req.params
         const encryptedToken = crypto
             .createHash("sha256")
             .update(token)
@@ -68,7 +90,7 @@ export const passwardReset =async (req: Request, res: Response) => {
                 $gt: Date.now()
             }
         })
-        if(!foundUser) return new ErrorRes(res, 404, 'Token is expired!')
+        if (!foundUser) return new ErrorRes(res, 404, 'Token is expired!')
         const { password } = req.body
         foundUser.password = password;
         foundUser.forgotpasstoken = undefined;
