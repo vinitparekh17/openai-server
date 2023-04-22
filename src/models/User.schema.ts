@@ -1,18 +1,15 @@
 import { model, Schema } from 'mongoose';
-import { NextFunction } from 'express'
+import type { NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import crypto from 'node:crypto';
-import { UserDocument, UserModel } from '../types/User.types';
+import type { UserDocument, UserModel } from '../types/User';
 
 const userSchema = new Schema<UserDocument>({
     userName: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
     forgotpasstoken: { type: String },
-    forgotpassexpire: { type: Date },
-    age: { type: Number, required: true },
-    qualification: { type: String, required: true },
-    hobbies: { type: [String], required: true }
+    forgotpassexpire: { type: Date }
 });
 
 userSchema.pre<UserDocument>('save', async function (this: UserDocument, next: NextFunction) {

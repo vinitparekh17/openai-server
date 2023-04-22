@@ -1,4 +1,4 @@
-import { Model, Document, Schema } from "mongoose";
+import type { Model, Document, Schema } from "mongoose";
 
 interface MessageFormat {
     content: string;

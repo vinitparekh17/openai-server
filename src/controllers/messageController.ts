@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { openai } from "../lib/Openai";
 import DataProvider from "../utils/Dataprovider";
 import messageSchema from "../models/Message.schema";

@@ -1,11 +1,12 @@
-import express, { Request, Response, NextFunction } from "express";
-import morgan, { StreamOptions } from "morgan";
-import { ApiError } from "./ErrorHandlers";
+import express from 'express';
+import type { Request, Response, NextFunction } from 'express';
+import { app } from '../app';
+import morgan, { StreamOptions } from 'morgan';
+import { ApiError } from './ErrorHandlers';
 import cors from 'cors';
-import { rateLimit } from "express-rate-limit";
-import { ErrorRes } from "./Responders";
-import { app } from "../app";
-import Logger from "./Logger";
+import { rateLimit } from 'express-rate-limit';
+import { ErrorRes } from './Responders';
+import Logger from './Logger';
 
 export class ErrorHandler {
   static handle = () => {
@@ -26,7 +27,7 @@ export default {
     try {
       app.use(rateLimit({
         windowMs: 1 * 60 * 1000, // 1min
-        max: 3,
+        max: 5,
         handler: (req: Request, res: Response, next: NextFunction) => {
           new ErrorRes(res, 429, "Too many request, try again later!")
           next()
