@@ -2,11 +2,11 @@ import express from 'express';
 import type { Request, Response, NextFunction } from 'express';
 import { app } from '../app';
 import morgan, { StreamOptions } from 'morgan';
-import { ApiError } from './ErrorHandlers';
+import { ApiError } from '../utils/ErrorHandlers';
 import cors from 'cors';
 import { rateLimit } from 'express-rate-limit';
-import { ErrorRes } from './Responders';
-import Logger from './Logger';
+import { Err } from '../utils/Responders';
+import Logger from '../utils/Logger';
 
 export class ErrorHandler {
   static handle = () => {
@@ -29,7 +29,7 @@ export default {
         windowMs: 1 * 60 * 1000, // 1min
         max: 5,
         handler: (req: Request, res: Response, next: NextFunction) => {
-          new ErrorRes(res, 429, "Too many request, try again later!")
+          Err.send(res, 429, "Too many request, try again later!")
           next()
         }
       }))

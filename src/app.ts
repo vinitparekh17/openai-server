@@ -1,6 +1,6 @@
 import express from 'express';
 import type { Application, Request, Response } from "express";
-import Middleware from './utils/Middlewares';
+import Middleware from './middlewares';
 import userRoutes from "./routes/user";
 import chatRoutes from "./routes/chat";
 
