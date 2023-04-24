@@ -1,12 +1,11 @@
 import type { NextFunction, Request, Response } from "express";
 import { openai } from "../lib/Openai";
 import DataProvider from "../utils/Dataprovider";
-import messageSchema from "../models/Message.Schema";
+import messageSchema from "../models/Message.schema";
 import { Err, Success } from "../utils/Responders";
 import Logger from "../utils/Logger";
 import { io } from "../lib/Socket";
 
-let MessageProvider = new DataProvider(messageSchema);
 export const generateResponse = async (req: Request, res: Response): Promise<any> => {
     try {
         let { prompt } = req.body
@@ -23,7 +22,6 @@ export const generateResponse = async (req: Request, res: Response): Promise<any
 
         io.on('connect', () => {
             Logger.debug('connected to socket!')
-
             completionPromise
             .then(completion => io.emit('create_completion', completion))
             .catch(err => Logger.error(err));
@@ -40,7 +38,7 @@ export const generateResponse = async (req: Request, res: Response): Promise<any
 
 export async function getConversation(req: Request, res: Response, next: NextFunction) {
     try {
-        const data = MessageProvider.getData();
+        const data = await DataProvider.getData(messageSchema);
         if (!data) return Err.send(res, 404, "Data not found!")
         return Success.send(res, 200, data)
     } catch (error) {

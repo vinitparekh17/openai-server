@@ -1,28 +1,27 @@
 import crypto from 'node:crypto'
 import type { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import userSchema from '../models/User.Schema';
 import DataProvider from '../utils/Dataprovider';
 import { Cookie, Err, Success } from '../utils/Responders';
 import EmailService from '../lib/EmailService';
 import { EmailFormat } from '../types/index.type';
 import Logger from '../utils/Logger';
+import UserSchema from '../models/User.schema';
 
-let UserProvider = new DataProvider(userSchema);
 export const signUp = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { firstName, lastName, email, password } = req.body;
-        let savedUser = await userSchema.findOne({ email })
+        let savedUser = await UserSchema.findOne({ email })
         if (!savedUser) {
-            let newUser = await userSchema.create({
+            let newUser = await UserSchema.create({
                 userName: `${firstName} ${lastName}`,
                 email,
                 password
             });
-            newUser.getJWT();
             return Cookie.send(res, newUser, 201);
+        } else {
+            return Err.send(res, 409, "User with this email already exists! ")
         }
-        return Err.send(res, 409, "User with this email already exists! ")
     } catch (error) {
         Logger.error(error)
         Err.send(res, 500, "Internal server error!")
@@ -31,7 +30,7 @@ export const signUp = async (req: Request, res: Response): Promise<Response> => 
 
 export const signIn = async (req: Request, res: Response): Promise<Response> => {
     const { email, password } = req.body;
-    const existUser = await userSchema.findOne({ email })
+    const existUser = await UserSchema.findOne({ email })
     if (existUser) {
         let matchPass = await bcrypt.compare(password, existUser.password)
         if (matchPass) {
@@ -45,7 +44,7 @@ export const signIn = async (req: Request, res: Response): Promise<Response> => 
 export const getUser = async (req: Request, res: Response): Promise<any> => {
     try {
         const { id } = req.params;
-        let user = UserProvider.getDataByID(id)
+        let user = await DataProvider.getDataByID(UserSchema, id)
         Success.send(res, 200, user)
     } catch (error) {
         Logger.error(error)
@@ -56,7 +55,7 @@ export const getUser = async (req: Request, res: Response): Promise<any> => {
 export const forgotPassword = async (req: Request, res: Response): Promise<any> => {
     try {
         let { email } = req.body;
-        let existUser = await UserProvider.getByEmail(email);
+        let existUser = await DataProvider.getByEmail(UserSchema, email);
         if (!existUser) {
             return Err.send(res, 404, 'User with this email does not exists!')
         }
@@ -85,7 +84,7 @@ export const passwardReset = async (req: Request, res: Response) => {
             .update(token)
             .digest("hex")
         // $gt is the classic mongodb query with refers to greater then 
-        const foundUser = await userSchema.findOne({
+        const foundUser = await UserSchema.findOne({
             encryptedToken,
             forgotPasswordExpiry: {
                 $gt: Date.now()
@@ -99,5 +98,14 @@ export const passwardReset = async (req: Request, res: Response) => {
         await foundUser.save();
     } catch (error) {
         console.log(error);
+    }
+}
+
+export const Protected = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        Logger.debug("Protected route triggered");
+        return res.status(200).json({ success: true, message: "Protected route triggered" })
+    } catch (error) {
+        Logger.error(error)
     }
 }
