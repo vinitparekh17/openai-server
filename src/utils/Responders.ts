@@ -19,6 +19,6 @@ export class Cookie {
     return res.status(statusCode).cookie('chatplus-token', token, {
       expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
       path: '/', httpOnly: true
-    }).json({ success: true })
+    }).json({ success: true, token })
   }
 }
