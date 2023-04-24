@@ -1,7 +1,6 @@
-import { Router } from 'express';
+const router = require('express').Router();
 import { generateResponse } from '../controllers/messageController'
-const router = Router();
 
-router.post('/chat/:id', generateResponse)
+router.route('/chat/:id').post(generateResponse)
 
 export default router;

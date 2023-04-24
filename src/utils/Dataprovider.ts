@@ -1,49 +1,44 @@
 import { Model, Types } from "mongoose"
 
 export default class DataProvider {
-    private model: Model<any>
-    constructor(model: Model<any>) {
-        this.model = model;
-    }
-
-    public async getData(): Promise<any[]> {
+    static async getData(model: Model<any>): Promise<any[]> {
         try {
-            const data = await this.model.find();
-            if(!data) return []
+            const data = await model.find();
+            if (!data) return []
             return data;
         } catch (e) {
             console.log(e);
         }
     }
 
-    public async getDataBySearch(key: string, value: string): Promise<any[]> {
+    static async getDataBySearch(model: Model<any>, k: string, v: string): Promise<any[]> {
         try {
-            const data = await this.model.find({key: value});
-            if(!data) return []
+            const data = await model.find({ k: v });
+            if (!data) return []
             return data;
         } catch (e) {
             console.log(e);
         }
     }
 
-    public async getDataByID(id: string): Promise<any | null> {
+    static async getDataByID(model: Model<any>, id: string): Promise<any | null> {
         try {
             if (!Types.ObjectId.isValid(id)) {
                 return null
             }
-            let data = await this.model.findById(id)
+            let data = await model.findById(id)
             return data
         } catch (e) {
             console.log(e);
         }
     }
 
-    public async getByEmail(email: string): Promise<any> {
+    static async getByEmail(model: Model<any>, email: string): Promise<any | null> {
         try {
-            let existUser = await this.model.find({ email });
-            return existUser ? existUser : null;
+            let data = await model.findOne({ email });
+            return data || null;
         } catch (error) {
-            console.log(error);
+            
         }
     }
 }

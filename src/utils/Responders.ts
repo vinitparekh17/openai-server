@@ -16,11 +16,9 @@ export class Err {
 export class Cookie {
   static send(res: Response, user: UserDocument, statusCode: number) {
     let token = user.getJWT()
-    return res.status(statusCode).cookie('auth-token', token, {
-      expires: new Date(
-        Date.now() + 3 + 24 + 60 + 60 * 1000
-      ),
-      httpOnly: true
-    })
+    return res.status(statusCode).cookie('chatplus-token', token, {
+      expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+      path: '/', httpOnly: true
+    }).json({ success: true })
   }
 }
