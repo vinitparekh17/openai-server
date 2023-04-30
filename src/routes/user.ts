@@ -6,12 +6,13 @@ import {
     getUser,
     passwardReset,
     forgotPassword,
-    Protected
+    Protected,
+    signOut
 } from '../controllers/userController';
 
 
-router.route('/signup').post(signUp);
 router.route('/signin').post(signIn);
+router.route('/signup').post(signUp);
 router.route('/:id').post(requireAuth, getUser);
 router.route('/user/').get(requireAuth, Protected);
 router.route('/resetpassword').get(requireAuth, passwardReset);
