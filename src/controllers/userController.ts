@@ -109,3 +109,13 @@ export const Protected = async (req: Request, res: Response): Promise<Response> 
         Logger.error(error)
     }
 }
+
+export const signOut = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        Logger.debug("Signout route triggered");
+        res.clearCookie('chatplus-token');
+        return res.status(200).json({ success: true, message: "Signout successfully" })
+    } catch (error) {
+        Logger.error(error)
+    }
+}
