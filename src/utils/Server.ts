@@ -1,6 +1,6 @@
 import type { Server } from 'node:http';
 import { app } from '../app';
-import Mongodb from './Database';
+import Mongodb from './Db';
 import Logger from './Logger';
 import { PORT } from '../config';
 require('../lib/Socket');
