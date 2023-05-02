@@ -15,10 +15,16 @@ export class Err {
 
 export class Cookie {
   static send(res: Response, user: UserDocument, statusCode: number) {
-    let token = user.getJWT()
-    return res.status(statusCode).cookie('chatplus-token', token, {
-      expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-      path: '/', httpOnly: true, sameSite: 'none', secure: true
-    }).json({ success: true, token })
+    let token = user.getJWT();
+    return res
+      .status(statusCode)
+      .cookie("chatplus-token", token, {
+        expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+        path: "/",
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      })
+      .json({ success: true, token });
   }
 }

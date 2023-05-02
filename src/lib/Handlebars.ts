@@ -213,7 +213,7 @@ const source = `<!DOCTYPE html>
         </script>
 </body>
 
-</html>`
+</html>`;
 
 export default Handlebars.compile(source);
 // let demoData = {
