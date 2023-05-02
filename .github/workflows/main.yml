@@ -38,13 +38,13 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
-      - name: image to aws
+      - name: Aws login
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_NAME }}
           role-duration-seconds: 1000
-          aws-region: ap-notheast-1
-      - name: Pull image to ec2
+          aws-region: ap-northeast-1
+      - name: Pull image and run
         working-directory: /
         run: |
           podman pull docker.io/vparekh17/aiserver
