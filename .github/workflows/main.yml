@@ -39,9 +39,9 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
       - name: Aws login
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_NAME }}
+          role-to-assume: arn:aws:iam::054014645716:role/git-action
           role-duration-seconds: 1000
           aws-region: ap-northeast-1
       - name: Pull image and run
