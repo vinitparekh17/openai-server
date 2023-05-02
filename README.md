@@ -6,6 +6,7 @@
 The backend server of openai chatbot
 
 # Technologies
+
 <ul>
 <li>NodeJS
 <li>ExpressJS
