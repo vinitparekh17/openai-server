@@ -41,7 +41,7 @@ jobs:
       - name: Aws login
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_NAME }}
+          role-to-assume: ${{ secrets.AWS_ROLE_NAME }}
           role-duration-seconds: 1000
           aws-region: ap-northeast-1
       - name: Pull image and run
