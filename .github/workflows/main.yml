@@ -50,5 +50,6 @@ jobs:
       - name: Pull image and run
         working-directory: ~
         run: |
+          cd ~
           podman pull docker.io/vparekh17/aiserver
           podman run -d --name awserver -p 8080:8080 --env-file env.list docker.io/vparekh17/aiserver
