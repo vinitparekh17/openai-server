@@ -38,6 +38,7 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
   Deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repo
