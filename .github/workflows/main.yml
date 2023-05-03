@@ -6,7 +6,6 @@ on:
       - "main"
 jobs:
   Deploy:
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to EC2
@@ -16,7 +15,6 @@ jobs:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
           run: |
-            pwd
             echo "$PRIVATE_KEY" > openaws && chmod 600 openaws
             ssh -i openaws $USERNAME@$HOST
             sudo podman pull docker.io/vparekh17/aiserver
