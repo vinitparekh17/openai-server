@@ -44,7 +44,7 @@ jobs:
       - name: Aws login
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::054014645716:role/git-action
+          role-to-assume: arn:aws:iam::054014645716:role/github-action
           role-duration-seconds: 1000
           aws-region: ap-northeast-1
       - name: Pull image and run
