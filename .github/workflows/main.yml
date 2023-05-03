@@ -17,4 +17,6 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
-          script: whoami
+          script: |
+            sudo podman pull docker.io/vparekh17/aiserver
+            sudo podman run -dp 8080:8080 --name aiserver --env-file env.list docker.io/vparekh17/aiserver
