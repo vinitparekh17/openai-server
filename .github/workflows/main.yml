@@ -51,6 +51,4 @@ jobs:
         working-directory: /
         run: |
           podman pull docker.io/vparekh17/aiserver
-          podman stop awserver
-          podman rm awserver
           podman run -d --name awserver -p 8080:8080 docker.io/vparekh17/aiserver
