@@ -41,17 +41,19 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
-      - name: Aws login
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::054014645716:role/github-action
-          role-duration-seconds: 1000
-          aws-region: ap-northeast-1
-      - name: Pull image and run
-        working-directory: ~
-        run: |
-          sudo cd ~
-          sudo pwd
-          sudo podman pull docker.io/vparekh17/aiserver
-          sudo podman run -d --name awserver -p 8080:8080 --env-file env.list docker.io/vparekh17/aiserver
+  Deploy:
+    needs: build
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Deploy to EC2
+      - uses: actions/checkout@v2
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          run: |
+            echo "$PRIVATE_KEY" > openaws && chmod 600 openaws
+            ssh -i openaws $USERNAME@$HOST
+            sudo podman pull docker.io/vparekh17/aiserver
+            sudo podman run -dp 8080:8080 --name aiserver --env-file env.list docker.io/vparekh17/aiserver
