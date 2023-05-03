@@ -48,7 +48,7 @@ jobs:
           role-duration-seconds: 1000
           aws-region: ap-northeast-1
       - name: Pull image and run
-        working-directory: /
+        working-directory: ~
         run: |
           podman pull docker.io/vparekh17/aiserver
-          podman run -d --name awserver -p 8080:8080 docker.io/vparekh17/aiserver
+          podman run -d --name awserver -p 8080:8080 --env-file env.list docker.io/vparekh17/aiserver
