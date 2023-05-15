@@ -5,7 +5,7 @@ import DataProvider from "../utils/Dataprovider";
 import messageSchema from "../models/Message.schema";
 import { Err, Success } from "../utils/Responders";
 import Logger from "../utils/Logger";
-import { io } from "../lib/Socket";
+import { socketServer } from "../utils/Server";
 
 export const generateResponse = AsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
@@ -20,17 +20,10 @@ export const generateResponse = AsyncHandler(
       user: id,
       stream: true,
     });
-
-    io.on("connect", () => {
       Logger.debug("connected to socket!");
       completionPromise
-        .then((completion) => io.emit("create_completion", completion))
+        .then((completion) => socketServer.streamData(completion.data.choices[0].message, id))
         .catch((err) => Logger.error(err));
-
-      io.on("data", (data) => io.emit("completion", data.choices[0].text));
-      io.on("error", (e) => Logger.error(e));
-      io.on("disconnect", () => Logger.debug("Disconnected from socket!"));
-    });
   }
 );
 
