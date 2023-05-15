@@ -1,12 +1,25 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.io = void 0;
-const Server_1 = require("../utils/Server");
+exports.SocketServer = void 0;
 const socket_io_1 = require("socket.io");
-const Logger_1 = __importDefault(require("../utils/Logger"));
-exports.io = new socket_io_1.Server(Server_1.server);
-exports.io.on("connect", () => Logger_1.default.debug("socket server started!"));
+class SocketServer {
+    constructor(server) {
+        this.io = new socket_io_1.Server(server, {
+            cors: {
+                origin: 'http://localhost:3000',
+                methods: ['GET', 'POST'],
+            },
+        });
+        this.setupSocket();
+    }
+    setupSocket() {
+        this.io.on('connection', (socket) => {
+            console.log(`Client ${socket.id} connected`);
+            socket.on('disconnect', () => {
+                console.log(`Client ${socket.id} disconnected`);
+            });
+        });
+    }
+}
+exports.SocketServer = SocketServer;
 //# sourceMappingURL=Socket.js.map

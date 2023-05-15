@@ -1,16 +1,18 @@
 import type { Server } from "node:http";
 import { app } from "../app";
 import Logger from "./Logger";
+import { SocketServer } from "../lib/Socket";
 import { PORT } from "../config";
-require("../lib/Socket");
 
-export const server: Server = require("http").createServer(app);
+export const server: Server = app.listen(PORT);
+export const socketServer = new SocketServer(server);
 
 export default class NodeServer {
   static start() {
     try {
-      server.listen(PORT, () => {
-        Logger.debug(`Server started on port ${process.env.PORT}`);
+      Logger.debug("Starting server...");
+      server.on("listening", () => {
+        Logger.debug(`Server started on port ${PORT}`);
       });
     } catch (error) {
       Logger.error(error);

@@ -19,7 +19,6 @@ const Dataprovider_1 = __importDefault(require("../utils/Dataprovider"));
 const Message_schema_1 = __importDefault(require("../models/Message.schema"));
 const Responders_1 = require("../utils/Responders");
 const Logger_1 = __importDefault(require("../utils/Logger"));
-const Socket_1 = require("../lib/Socket");
 exports.generateResponse = (0, handlers_1.AsyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { prompt } = req.body;
     let { id } = req.params;
@@ -32,15 +31,13 @@ exports.generateResponse = (0, handlers_1.AsyncHandler)((req, res) => __awaiter(
         user: id,
         stream: true,
     });
-    Socket_1.io.on("connect", () => {
-        Logger_1.default.debug("connected to socket!");
-        completionPromise
-            .then((completion) => Socket_1.io.emit("create_completion", completion))
-            .catch((err) => Logger_1.default.error(err));
-        Socket_1.io.on("data", (data) => Socket_1.io.emit("completion", data.choices[0].text));
-        Socket_1.io.on("error", (e) => Logger_1.default.error(e));
-        Socket_1.io.on("disconnect", () => Logger_1.default.debug("Disconnected from socket!"));
-    });
+    Logger_1.default.debug("connected to socket!");
+    // completionPromise
+    //   .then((completion) => io.emit("create_completion", completion))
+    //   .catch((err) => Logger.error(err));
+    // io.on("data", (data) => io.emit("completion", data.choices[0].text));
+    // io.on("error", (e) => Logger.error(e));
+    // io.on("disconnect", () => Logger.debug("Disconnected from socket!"));
 }));
 exports.getConversation = (0, handlers_1.AsyncHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const data = yield Dataprovider_1.default.getData(Message_schema_1.default);
