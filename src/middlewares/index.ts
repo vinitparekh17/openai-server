@@ -34,12 +34,7 @@ export default {
         var env = process.env.NODE_ENV || "development";
         return env !== "development";
       };
-      app.use(
-        morgan(
-          ":method :url :status :res[content-length] - :response-time ms",
-          { stream, skip }
-        )
-      );
+      app.use(morgan(":method :url :status :res[content-length] - :response-time ms",{ stream, skip }));
       app.use(cookieParser());
       app.use(express.json());
       app.use(
