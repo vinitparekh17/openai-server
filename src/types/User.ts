@@ -1,6 +1,6 @@
-import type { Request } from "express";
-import type { JwtPayload } from "jsonwebtoken";
-import type { Model, Document } from "mongoose";
+import type { Request } from 'express';
+import type { JwtPayload } from 'jsonwebtoken';
+import type { Model, Document } from 'mongoose';
 
 interface User extends Document {
   userName: string;

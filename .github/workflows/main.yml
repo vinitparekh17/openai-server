@@ -2,7 +2,7 @@ name: Build Docker Image and Deploy to EC2
 on:
   push:
     branches:
-      - "main"
+      - 'main'
 jobs:
   build:
     runs-on: ubuntu-latest

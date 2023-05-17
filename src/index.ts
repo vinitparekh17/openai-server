@@ -1,2 +1,2 @@
-import NodeServer from "./utils/Server";
+import NodeServer from './utils/Server';
 NodeServer.start();

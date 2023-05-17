@@ -1,10 +1,10 @@
-import { model, Schema } from "mongoose";
-import type { NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import crypto from "node:crypto";
-import { JWT_SECRET, JWT_EXPIRY } from "../config";
-import type { UserDocument, UserModel } from "../types/User";
+import { model, Schema } from 'mongoose';
+import type { NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import crypto from 'node:crypto';
+import { JWT_SECRET, JWT_EXPIRY } from '../config';
+import type { UserDocument, UserModel } from '../types/User';
 
 const userSchema = new Schema<UserDocument>({
   userName: { type: String, required: true },
@@ -15,9 +15,9 @@ const userSchema = new Schema<UserDocument>({
 });
 
 userSchema.pre<UserDocument>(
-  "save",
+  'save',
   async function (this: UserDocument, next: NextFunction) {
-    if (!this.isModified("password")) return next();
+    if (!this.isModified('password')) return next();
     try {
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(this.password, salt);
@@ -32,7 +32,7 @@ userSchema.pre<UserDocument>(
 
 userSchema.methods = {
   getForgotToken: function (): string {
-    const forgotToken = crypto.randomBytes(20).toString("hex");
+    const forgotToken = crypto.randomBytes(20).toString('hex');
     this.forgotpasstoken = forgotToken;
     this.forgotpassexpire = Date.now() + 60 * 1000;
     return forgotToken;
@@ -67,4 +67,4 @@ userSchema.statics = {
   },
 };
 
-export default model<UserDocument, UserModel>("User", userSchema);
+export default model<UserDocument, UserModel>('User', userSchema);
