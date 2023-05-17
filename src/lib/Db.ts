@@ -1,5 +1,5 @@
-import { connect, ConnectOptions } from "mongoose";
-import { MONGO_URI } from "../config";
+import { connect, ConnectOptions } from 'mongoose';
+import { MONGO_URI } from '../config';
 
 export default class MongoDB {
   static async init() {
@@ -10,7 +10,7 @@ export default class MongoDB {
         keepAlive: true,
       };
       await connect(MONGO_URI, options);
-      console.log("MongoDB connected");
+      console.log('MongoDB connected');
     } catch (error) {
       console.log(error);
       process.exit(1);

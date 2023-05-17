@@ -1,5 +1,5 @@
-import type { Request, Response, NextFunction } from "express";
-import { Err } from "../utils/Responders";
+import type { Request, Response, NextFunction } from 'express';
+import { Err } from '../utils/Responders';
 
 export default (fn: Function) =>
   (req: Request, res: Response, next: NextFunction) => {
