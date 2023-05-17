@@ -10,7 +10,7 @@ export class SocketServer {
   constructor(server: Server) {
     this.io = new SocketIOServer(server, {
       cors: {
-        origin: 'http://localhost:3000', // replace with your frontend URL
+        origin: ['https://omnisive.technetic.co.in:*', 'http://localhost:*'],
         methods: ['GET', 'POST'],
       },
     });
