@@ -41,9 +41,10 @@ export class SocketServer {
         } else if (decoded === 'invalid') {
           socket.disconnect();
         } else {
-          let { id } = decoded as customPayload;
-          Cache.set(id, socket.id);
-          console.log(Cache.get(id));
+          let { data } = decoded as customPayload;
+          if(data !== undefined) {
+          const suc = Cache.set(data.id, socket.id);
+          }
         }
       }
       socket.on('disconnect', () => {
