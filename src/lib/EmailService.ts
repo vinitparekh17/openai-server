@@ -1,19 +1,19 @@
-import { createTransport } from "nodemailer";
-import { EmailFormat } from "../types/index.type";
+import { createTransport } from 'nodemailer';
+import { EmailFormat } from '../types/index.type';
 
 export default class EmailService {
   private optionData: EmailFormat;
   private transporter = createTransport({
-    service: "gmail",
+    service: 'gmail',
     port: 587,
     secure: false,
     auth: {
-      user: "",
-      pass: "",
+      user: '',
+      pass: '',
     },
     tls: {
       rejectUnauthorized: false,
-      ciphers: "SSLv3",
+      ciphers: 'SSLv3',
     },
   });
   constructor(option: EmailFormat) {

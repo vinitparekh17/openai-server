@@ -1,5 +1,5 @@
-import { Response } from "express";
-import { UserDocument } from "../types/User";
+import { Response } from 'express';
+import { UserDocument } from '../types/User';
 
 export class Success {
   static send(res: Response, statusCode: number, data: object | string) {
@@ -18,11 +18,11 @@ export class Cookie {
     let token = user.getJWT();
     return res
       .status(statusCode)
-      .cookie("chatplus-token", token, {
+      .cookie('chatplus-token', token, {
         expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-        path: "/",
+        path: '/',
         httpOnly: true,
-        sameSite: "none",
+        sameSite: 'none',
         secure: true,
       })
       .json({ success: true, token });

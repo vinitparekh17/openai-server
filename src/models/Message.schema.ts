@@ -1,5 +1,5 @@
-import { Schema, model } from "mongoose";
-import type { MessageDocument, MessageModel } from "../types/Message";
+import { Schema, model } from 'mongoose';
+import type { MessageDocument, MessageModel } from '../types/Message';
 
 const messageSchema = new Schema<MessageDocument>({
   prompt: {
@@ -15,9 +15,9 @@ const messageSchema = new Schema<MessageDocument>({
     default: Date.now,
   },
   user: {
-    ref: "User",
+    ref: 'User',
     type: Schema.Types.ObjectId,
   },
 });
 
-export default model<MessageDocument, MessageModel>("Message", messageSchema);
+export default model<MessageDocument, MessageModel>('Message', messageSchema);
