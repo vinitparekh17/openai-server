@@ -1,5 +1,5 @@
-import { Model, Types } from "mongoose";
-import Logger from "./Logger";
+import { Model, Types } from 'mongoose';
+import Logger from './Logger';
 
 export default class DataProvider {
   static async getData(model: Model<any>): Promise<any[]> {
