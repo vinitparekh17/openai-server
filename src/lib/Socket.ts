@@ -1,12 +1,12 @@
 import { Server } from 'http';
-import { customPayload } from '../types/index.type';
+import { customPayload } from '../types';
 import { decodeToken } from '../utils/JwtDecoder';
 import { Cache } from './Node-Cache';
 import { Server as SocketIOServer, Socket } from 'socket.io';
 
 export class SocketServer {
   private io: SocketIOServer;
-
+  private dbId: string = '';
   constructor(server: Server) {
     this.io = new SocketIOServer(server, {
       cors: {
@@ -42,8 +42,12 @@ export class SocketServer {
           socket.disconnect();
         } else {
           let { data } = decoded as customPayload;
-          if(data !== undefined) {
-          const suc = Cache.set(data.id, socket.id);
+          if (data !== undefined) {
+            this.dbId = data.id;
+            const suc = Cache.set(data.id, socket.id);
+            if (suc) {
+              socket.to(data.id).emit('online', true);
+            }
           }
         }
       }
@@ -53,7 +57,10 @@ export class SocketServer {
     });
   }
 
-  public streamData(data: any, toId: string) {
-    this.io.to(toId).emit('data', data);
+  public streamData(data: any) {
+    let socketId: string | undefined = Cache.get(this.dbId);
+    if (socketId !== undefined) {
+      this.io.to(socketId).emit('data', data);
+    }
   }
 }

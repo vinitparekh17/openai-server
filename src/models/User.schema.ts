@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import crypto from 'node:crypto';
 import { JWT_SECRET, JWT_EXPIRY } from '../config';
-import type { UserDocument, UserModel } from '../types/User';
+import type { UserDocument, UserModel } from '../types';
 
 const userSchema = new Schema<UserDocument>({
   userName: { type: String, required: true },

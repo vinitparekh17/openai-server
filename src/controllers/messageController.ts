@@ -1,11 +1,12 @@
 import type { NextFunction, Request, Response } from 'express';
+import { StreamFormat } from '../types';
 import { openai } from '../lib/Openai';
 import { AsyncHandler } from '../handlers';
 import DataProvider from '../utils/Dataprovider';
 import messageSchema from '../models/Message.schema';
 import { Err, Success } from '../utils/Responders';
 import Logger from '../utils/Logger';
-import { socketServer } from '../utils/Server';
+import { socketServer } from '../';
 
 export const generateResponse = AsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
@@ -20,12 +21,36 @@ export const generateResponse = AsyncHandler(
       user: id,
       stream: true,
     });
-    Logger.debug('connected to socket!');
+    let resultArr: StreamFormat[] = [];
+    let gptResponse: string;
     completionPromise
-      .then((completion) =>
-        socketServer.streamData(completion.data.choices[0].message, id)
-      )
-      .catch((err) => Logger.error(err));
+      .then((completion) => {
+        for (const chunk in completion) {
+          if (chunk === 'data') {
+            let raw = completion[chunk];
+            let data = raw.toString().split('data: ');
+            data.forEach((item: any) => {
+              if (item !== '' && item !== '[DONE]\n\n') {
+                resultArr.push(JSON.parse(item));
+                resultArr.map(
+                  (item) => (gptResponse += item.choices[0].delta?.content)
+                ),
+                  socketServer.streamData({
+                    status: 'steaming',
+                    data: gptResponse,
+                  });
+              } else if (item === '[DONE]\n\n') {
+                socketServer.streamData({ status: 'done' });
+              }
+            });
+          }
+        }
+        return Success.send(res, 200, { message: 'Stream started' });
+      })
+      .catch((err) => {
+        Err.send(res, 500, err);
+        Logger.error('Openai err: ', err);
+      });
   }
 );
 

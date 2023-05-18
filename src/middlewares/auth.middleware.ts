@@ -4,7 +4,7 @@ import { Err } from '../utils/Responders';
 import UserSchema from '../models/User.schema';
 import DataProvider from '../utils/Dataprovider';
 import type { Response, NextFunction } from 'express';
-import type { AuthenticatedRequest, customPayload } from '../types/index.type';
+import type { AuthenticatedRequest, customPayload } from '../types';
 
 export async function requireAuth(
   req: AuthenticatedRequest,

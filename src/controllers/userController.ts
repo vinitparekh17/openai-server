@@ -7,7 +7,7 @@ import DataProvider from '../utils/Dataprovider';
 import { Cookie, Err, Success } from '../utils/Responders';
 import EmailService from '../lib/EmailService';
 import { AsyncHandler } from '../handlers';
-import { EmailFormat } from '../types/index.type';
+import { EmailFormat } from '../types';
 
 export const signUp = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
