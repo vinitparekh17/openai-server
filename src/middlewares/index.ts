@@ -1,33 +1,13 @@
 import express from 'express';
-import type { Request, Response, NextFunction } from 'express';
 import { app } from '../app';
 import morgan, { StreamOptions } from 'morgan';
-import { ApiError } from '../handlers';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import Logger from '../utils/Logger';
+import { Logger } from '../utils/';
+import { ErrorHandler } from './err.middleware';
 
-export class ErrorHandler {
-  static handle = () => {
-    return async (
-      err: ApiError,
-      req: Request,
-      res: Response,
-      next: NextFunction
-    ) => {
-      const statusCode = err.statusCode || 500;
-      res.status(statusCode).send({
-        success: false,
-        message: err.message,
-        stack: err.stack,
-      });
-      next();
-    };
-  };
-}
-
-export default {
-  init: () => {
+class Middlewares {
+  static init() {
     try {
       let stream: StreamOptions = { write: (m) => Logger.http(m) };
       let skip = (): boolean => {
@@ -53,5 +33,8 @@ export default {
     } catch (error) {
       Logger.error(error);
     }
-  },
-};
+  }
+}
+export { Middlewares, ErrorHandler };
+export { AuthMiddleware } from './auth.middleware';
+export { SocketMiddleware } from './socket.middleware';

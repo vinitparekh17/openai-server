@@ -1,9 +1,9 @@
 import Template from '../lib/Handlebars';
-import Logger from './Logger';
+import { Logger } from './';
 import MessageSchema from '../models/Message.schema';
-import DataProvider from './Dataprovider';
+import { DataProvider } from './';
 
-export default class Transcript {
+export class Transcript {
   static async ganerate(id: string): Promise<string | null> {
     try {
       let data = await DataProvider.getDataBySearch(MessageSchema, 'user', id);

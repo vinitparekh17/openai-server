@@ -1,7 +1,7 @@
 import { Model, Types } from 'mongoose';
-import Logger from './Logger';
+import { Logger } from './';
 
-export default class DataProvider {
+export class DataProvider {
   static async getData(model: Model<any>): Promise<any[]> {
     try {
       const data = await model.find();

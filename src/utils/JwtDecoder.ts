@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import Logger from './Logger';
+import { Logger } from './';
 import { JWT_SECRET } from '../config';
 
 export const decodeToken = (token: string): jwt.JwtPayload | string => {

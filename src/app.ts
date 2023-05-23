@@ -1,6 +1,6 @@
 import express from 'express';
 import type { Application, Request, Response } from 'express';
-import Middleware from './middlewares';
+import { Middlewares, SocketMiddleware } from './middlewares';
 import Mongodb from './lib/Db';
 import userRoutes from './routes/user';
 import chatRoutes from './routes/chat';
@@ -8,7 +8,10 @@ import chatRoutes from './routes/chat';
 export const app: Application = express();
 
 Mongodb.init();
-Middleware.init();
+Middlewares.init();
+setTimeout(() => {
+  SocketMiddleware.init();
+}, 1000);
 
 app.use('/api/user', userRoutes);
 app.use('/api/chat', chatRoutes);
