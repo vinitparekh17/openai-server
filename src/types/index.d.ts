@@ -1,6 +1,6 @@
 export { EmailFormat } from './Email';
 export { MessageDocument, MessageModel } from './Message';
-export { StreamFormat } from './MsgStream';
+export { OpenaiResponse } from './Openai';
 export {
   UserDocument,
   UserModel,

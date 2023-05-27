@@ -1,21 +1,13 @@
 import { io } from '../';
+import type { Socket } from 'socket.io';
 import { customPayload } from '../types';
 import { decodeToken } from '../utils/';
 import { Cache } from '../lib/Node-Cache';
 
 export class SocketMiddleware {
   static init() {
-    io.use((socket, next) => {
-      let token: string | null = null;
-      let cookieString = socket.request.headers.cookie;
-      const cookieObj: { [key: string]: string } = {};
-      if (cookieString !== undefined) {
-        cookieString.split(';').forEach((cookie) => {
-          const [name, value] = cookie.trim().split('=');
-          cookieObj[name] = value;
-        });
-        token = cookieObj['chatplus-token'];
-      }
+    io.use((socket: Socket, next) => {
+      let token: string = SocketMiddleware.getCookieToken(socket);
       if (!token) {
         new Error('Unauthorized');
       } else {
@@ -36,5 +28,23 @@ export class SocketMiddleware {
         }
       }
     });
+  }
+
+  static getCookieToken(socket: Socket): string {
+    let cookieString = socket.request.headers.cookie;
+    const cookieObj: { [key: string]: string } = {};
+    if (cookieString !== undefined) {
+      cookieString.split(';').forEach((cookie: string) => {
+        const [name, value] = cookie.trim().split('=');
+        cookieObj[name] = value;
+      });
+      return cookieObj['chatplus-token'];
+    }
+  }
+
+  static getIdFromToken(CookieToken: string): string {
+    let decoded = decodeToken(CookieToken);
+    let { data } = decoded as customPayload;
+    return data.id;
   }
 }

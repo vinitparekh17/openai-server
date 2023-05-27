@@ -1,10 +1,15 @@
 import { Server } from 'http';
 import { Cache } from './Node-Cache';
+import { openai } from './Openai';
 import { Server as SocketIOServer, Socket } from 'socket.io';
+import { SocketMiddleware } from '../middlewares';
+import { OpenaiResponse } from '../types';
 
 export class SocketServer {
   static io: SocketIOServer;
-  private dbId: string = '';
+  private fullRes: string;
+  private cacheKey: string;
+  private toUser: string;
   constructor(server: Server) {
     SocketServer.io = new SocketIOServer(server, {
       cors: {
@@ -19,52 +24,33 @@ export class SocketServer {
     let { io } = SocketServer;
     io.on('connection', (socket: Socket) => {
       console.log(`Client ${socket.id} connected`);
-      io.to(socket.id).emit('online', {
-        message: 'You are connected',
+      socket.on('request-stream', async (prompt) => {
+        const res = (await openai.createChatCompletion(
+          {
+            model: 'gpt-3.5-turbo',
+            max_tokens: 200,
+            temperature: 0.7,
+            messages: [{ role: 'user', content: prompt }],
+            n: 1,
+            stream: true,
+          },
+          {
+            responseType: 'stream',
+          }
+        )) as unknown as OpenaiResponse;
+        this.cacheKey = SocketMiddleware.getIdFromToken(
+          SocketMiddleware.getCookieToken(socket)
+        );
+        this.toUser = Cache.get(this.cacheKey);
+        res.data.on('data', (chunk: any) => {
+          SocketServer.io
+            .to(this.toUser)
+            .emit('response-stream', chunk.toString());
+        });
       });
       socket.on('disconnect', () => {
         console.log(`Client ${socket.id} disconnected`);
       });
     });
   }
-
-  public streamData(data: any) {
-    let socketId: string | undefined = Cache.get(this.dbId);
-    if (socketId !== undefined) {
-      SocketServer.io.to(socketId).emit('data', data);
-    }
-  }
 }
-
-// let token: string | null = null;
-//       let cookieString = socket.request.headers.cookie;
-//       const cookieObj: { [key: string]: string } = {};
-//       if (cookieString !== undefined) {
-//         cookieString.split(';').forEach((cookie) => {
-//           const [name, value] = cookie.trim().split('=');
-//           cookieObj[name] = value;
-//         });
-//         token = cookieObj['chatplus-token'];
-//       }
-//       if (!token) {
-//         socket.disconnect();
-//       } else {
-//         let decoded = decodeToken(token);
-//         if (decoded === 'expired') {
-//           socket.disconnect();
-//         } else if (decoded === 'error') {
-//           socket.disconnect();
-//         } else if (decoded === 'invalid') {
-//           socket.disconnect();
-//         } else {
-//           let { data } = decoded as customPayload;
-//           if (data !== undefined) {
-//             this.dbId = data.id;
-//             const suc = Cache.set(data.id, socket.id);
-//             if (suc) {
-//               let socketID: string = Cache.get(data.id);
-//               SocketServer.io.to(socketID).emit('online', true);
-//             }
-//           }
-//         }
-//       }
