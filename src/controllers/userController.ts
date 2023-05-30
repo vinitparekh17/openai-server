@@ -1,13 +1,11 @@
-import crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
-import type { Request, Response } from 'express';
-import UserSchema from '../models/User.schema';
-import { Logger } from '../utils/';
-import { DataProvider } from '../utils/';
-import { Cookie, Err, Success } from '../utils/';
-import EmailService from '../lib/EmailService';
+import crypto from 'node:crypto';
 import { AsyncHandler } from '../handlers';
-import { EmailFormat } from '../types';
+import type { EmailFormat } from '../types';
+import UserSchema from '../models/User.schema';
+import EmailService from '../lib/EmailService';
+import type { Request, Response } from 'express';
+import { Cookie, Err, Success, DataProvider, Logger } from '../utils';
 
 export const signUp = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
@@ -98,7 +96,7 @@ export const passwardReset = AsyncHandler(
 );
 
 export const Protected = AsyncHandler(
-  async (req: Request, res: Response): Promise<Response> => {
+  async (_req: Request, res: Response): Promise<Response> => {
     Logger.debug('Protected route triggered');
     return res
       .status(200)
@@ -107,7 +105,7 @@ export const Protected = AsyncHandler(
 );
 
 export const signOut = AsyncHandler(
-  async (req: Request, res: Response): Promise<Response> => {
+  async (_req: Request, res: Response): Promise<Response> => {
     Logger.debug('Signout route triggered');
     res.clearCookie('chatplus-token');
     return res

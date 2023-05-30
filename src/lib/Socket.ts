@@ -7,7 +7,7 @@ import { OpenaiResponse } from '../types';
 
 export class SocketServer {
   static io: SocketIOServer;
-  private fullRes: string;
+  private socket: Socket;
   private cacheKey: string;
   private toUser: string;
   constructor(server: Server) {
@@ -23,6 +23,7 @@ export class SocketServer {
   private setupSocket() {
     let { io } = SocketServer;
     io.on('connection', (socket: Socket) => {
+      this.socket = socket;
       console.log(`Client ${socket.id} connected`);
       socket.on('request-stream', async (prompt) => {
         const res = (await openai.createChatCompletion(
@@ -50,6 +51,10 @@ export class SocketServer {
       });
       socket.on('disconnect', () => {
         console.log(`Client ${socket.id} disconnected`);
+        this.cacheKey = SocketMiddleware.getIdFromToken(
+          SocketMiddleware.getCookieToken(this.socket)
+        );
+        Cache.del(this.cacheKey);
       });
     });
   }
