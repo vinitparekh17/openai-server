@@ -6,7 +6,7 @@ import { PORT } from './config';
 
 export const server: Server = app.listen(PORT);
 export const socketServer = new SocketServer(server);
-export const {io} = SocketServer;
+export const { io } = SocketServer;
 class NodeServer {
   static start() {
     try {

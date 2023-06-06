@@ -4,7 +4,6 @@ import { customPayload } from '../types';
 import { decodeToken } from '../utils/';
 import { Cache } from '../lib/Node-Cache';
 
-
 export class SocketMiddleware {
   static init() {
     io.use((socket: Socket, next: any) => {

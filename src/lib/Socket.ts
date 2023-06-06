@@ -10,6 +10,7 @@ export class SocketServer {
   private socket: Socket;
   private cacheKey: string;
   private toUser: string;
+  private chunkData: string;
   constructor(server: Server) {
     SocketServer.io = new SocketIOServer(server, {
       cors: {
@@ -26,28 +27,38 @@ export class SocketServer {
       this.socket = socket;
       console.log(`Client ${socket.id} connected`);
       socket.on('request-stream', async (prompt) => {
-        const res = (await openai.createChatCompletion(
-          {
-            model: 'gpt-3.5-turbo',
-            max_tokens: 200,
-            temperature: 0.7,
-            messages: [{ role: 'user', content: prompt }],
-            n: 1,
-            stream: true,
-          },
-          {
-            responseType: 'stream',
-          }
-        )) as unknown as OpenaiResponse;
-        this.cacheKey = SocketMiddleware.getIdFromToken(
-          SocketMiddleware.getCookieToken(socket)
-        );
-        this.toUser = Cache.get(this.cacheKey);
-        res.data.on('data', (chunk: any) => {
-          SocketServer.io
-            .to(this.toUser)
-            .emit('response-stream', chunk.toString());
-        });
+        try {
+          const res = (await openai.createChatCompletion(
+            {
+              model: 'gpt-3.5-turbo',
+              max_tokens: 200,
+              temperature: 0.7,
+              messages: [{ role: 'user', content: prompt }],
+              n: 1,
+              stream: true,
+            },
+            {
+              responseType: 'stream',
+            }
+          )) as unknown as OpenaiResponse;
+          this.cacheKey = SocketMiddleware.getIdFromToken(
+            SocketMiddleware.getCookieToken(socket)
+          );
+          this.toUser = Cache.get(this.cacheKey);
+          res.data.on('data', (chunk: any) => {
+            let { chunkData } = this;
+            chunkData = chunk.toString();
+            chunkData = chunkData.replace('[DONE]', '"done"');
+            chunkData = chunkData.replace('data:', '"data":');
+            chunkData = chunkData.replace('\n\ndata:', ',"data":');
+            console.log(chunkData);
+            SocketServer.io
+              .to(this.toUser)
+              .emit('response-stream', `{${chunkData}}`);
+          });
+        } catch (error) {
+          console.log(error);
+        }
       });
       socket.on('disconnect', () => {
         console.log(`Client ${socket.id} disconnected`);
