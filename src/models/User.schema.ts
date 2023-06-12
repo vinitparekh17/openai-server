@@ -50,7 +50,7 @@ userSchema.methods = {
       {
         data: {
           id: this._id,
-          userName: this.userName,
+          name: this.name,
           email: this.email,
           profile: this.profile
         },
