@@ -3,7 +3,8 @@ import type { JwtPayload } from 'jsonwebtoken';
 import type { Model, Document } from 'mongoose';
 
 interface User extends Document {
-  userName: string;
+  name: string;
+  profile: number;
   email: string;
   password: string;
   forgotpasstoken: string;
