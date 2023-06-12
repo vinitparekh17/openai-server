@@ -1,4 +1,4 @@
-import { io } from '../';
+import { io } from '../index';
 import type { Socket } from 'socket.io';
 import { customPayload } from '../types';
 import { decodeToken } from '../utils/';
@@ -6,7 +6,7 @@ import { Cache } from '../lib/Node-Cache';
 
 export class SocketMiddleware {
   static init() {
-    io.use((socket: Socket, next) => {
+    io.use((socket: Socket, next: any) => {
       let token: string = SocketMiddleware.getCookieToken(socket);
       if (!token) {
         new Error('Unauthorized');

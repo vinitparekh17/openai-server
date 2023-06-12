@@ -7,3 +7,4 @@ export {
   AuthenticatedRequest,
   customPayload,
 } from './User';
+export { ChunkObj } from './Stream';
