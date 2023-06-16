@@ -19,6 +19,7 @@ export class SocketServer {
       cors: {
         origin: ['https://omnisive.technetic.co.in:*', 'http://localhost:*'],
         methods: ['GET', 'POST'],
+        credentials: true
       },
     });
     this.setupSocket();
