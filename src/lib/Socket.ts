@@ -27,7 +27,7 @@ export class SocketServer {
 
   private setupSocket() {
     let { io } = SocketServer;
-    io.on('connection', (socket: Socket) => {
+    io.on('connect', (socket: Socket) => {
       this.socket = socket;
       console.log(`Client ${socket.id} connected`);
       socket.on('request-stream', async (prompt) => {
