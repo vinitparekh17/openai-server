@@ -52,7 +52,7 @@ userSchema.methods = {
           id: this._id,
           name: this.name,
           email: this.email,
-          profile: this.profile
+          profile: this.profile,
         },
       },
       JWT_SECRET,

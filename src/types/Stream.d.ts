@@ -1,11 +1,11 @@
 export interface ChunkObj {
-    "data": {
-        "choices": [
-            {
-                "delta": {
-                    "content"?: string
-                }
-            }
-        ]
-    }
+  data: {
+    choices: [
+      {
+        delta: {
+          content?: string;
+        };
+      }
+    ];
+  };
 }
