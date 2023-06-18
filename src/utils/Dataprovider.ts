@@ -18,7 +18,7 @@ export class DataProvider {
     v: string
   ): Promise<any[]> {
     try {
-      const data = await model.find({ k: v });
+      const data = await model.find({ [k]: v });
       if (!data) return [];
       return data;
     } catch (e) {

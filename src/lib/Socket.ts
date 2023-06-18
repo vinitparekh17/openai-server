@@ -17,9 +17,9 @@ export class SocketServer {
   constructor(server: Server) {
     SocketServer.io = new SocketIOServer(server, {
       cors: {
-        origin: ['https://omnisive.technetic.co.in:*', 'http://localhost:*'],
+        origin: ['https://omnisive.technetic.co.in', 'http://localhost:*'],
         methods: ['GET', 'POST'],
-        credentials: true
+        credentials: true,
       },
     });
     this.setupSocket();
@@ -52,7 +52,7 @@ export class SocketServer {
           toUser = Cache.get(cacheKey);
           res.data.on('data', (chunk: any) => {
             chunkData = chunk.toString();
-            chunkData = chunkData.replace('[DONE]', "false");
+            chunkData = chunkData.replace('[DONE]', 'false');
             chunkData = chunkData.replace('data:', '"data":');
             chunkData = chunkData.replace('\n\ndata:', ',"data":');
 
@@ -66,7 +66,11 @@ export class SocketServer {
               console.log(chunkObj.data.choices[0].delta?.content);
               completeResponse.push(chunkObj.data.choices[0].delta?.content);
             } else {
-              StramSaver.saveStream(cacheKey, prompt, completeResponse.join(""));
+              StramSaver.saveStream(
+                cacheKey,
+                prompt,
+                completeResponse.join('')
+              );
               completeResponse = [];
               chunkData = '';
             }
