@@ -50,10 +50,10 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             cd ~
+            pm2 stop all
             rm -rf openai-chatbot
             git clone https://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@github.com/vinitparekh17/openai-chatbot
             cd openai-chatbot
-            pm2 stop all
             yarn install
             yarn build
             pm2 start dist/index.js

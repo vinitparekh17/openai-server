@@ -1,4 +1,5 @@
 import type { Server } from 'node:http';
+import { Cache } from './lib/Node-Cache';
 import { app } from './app';
 import { Logger } from './utils/';
 import { SocketServer } from './lib/Socket';
@@ -11,6 +12,10 @@ class NodeServer {
   static start() {
     try {
       Logger.debug('Starting server...');
+      Cache.flushAll();
+      setInterval(() => {
+        Cache.flushAll();
+      }, 1000 * 60 * 60 * 24);
       server.on('listening', () => {
         Logger.debug(`Server started on port ${PORT}`);
       });
