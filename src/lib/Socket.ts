@@ -31,6 +31,9 @@ export class SocketServer {
       this.socket = socket;
       console.log(`Client ${socket.id} connected`);
       socket.on('request-stream', async (prompt) => {
+        this.completeResponse = [];
+        this.chunkData = '';
+        this.chunkObj = {};
         let { chunkData, chunkObj, completeResponse, cacheKey, toUser } = this;
         try {
           const res = (await openai.createChatCompletion(
@@ -59,21 +62,21 @@ export class SocketServer {
             SocketServer.io
               .to(toUser)
               .emit('response-stream', `{${chunkData}}`);
-
-            chunkObj = JSON.parse(`{${chunkData}}`);
-
-            if (chunkObj?.data) {
-              console.log(chunkObj.data.choices[0].delta?.content);
-              completeResponse.push(chunkObj.data.choices[0].delta?.content);
-            } else {
-              StramSaver.saveStream(
-                cacheKey,
-                prompt,
-                completeResponse.join('')
-              );
-              completeResponse = [];
-              chunkData = '';
+            try {
+              chunkObj = JSON.parse(`{${chunkData}}`);
+              if (chunkObj?.data) {
+                completeResponse.push(chunkObj.data.choices[0].delta?.content);
+              }
+            } catch (error) {
+              console.log(error);
             }
+          });
+          res.data.on('end', () => {
+            console.log('Cleared or not?', completeResponse.join(''));
+            StramSaver.saveStream(cacheKey, prompt, completeResponse.join(''));
+            completeResponse = [];
+            chunkObj = {};
+            chunkData = '';
           });
         } catch (error) {
           console.log(error);
@@ -81,6 +84,10 @@ export class SocketServer {
       });
       socket.on('disconnect', () => {
         console.log(`Client ${socket.id} disconnected`);
+        this.toUser = '';
+        this.chunkData = '';
+        this.chunkObj = {};
+        this.completeResponse = [];
         this.cacheKey = SocketMiddleware.getIdFromToken(
           SocketMiddleware.getCookieToken(this.socket)
         );

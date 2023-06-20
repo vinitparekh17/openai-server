@@ -1,5 +1,5 @@
 export interface ChunkObj {
-  data: {
+  data?: {
     choices: [
       {
         delta: {
