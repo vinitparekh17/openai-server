@@ -10,4 +10,5 @@ export const {
   REGION,
   JWT_SECRET,
   JWT_EXPIRY,
+  STRIPE: STRIPE_API,
 } = process.env;
