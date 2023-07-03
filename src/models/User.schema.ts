@@ -9,7 +9,7 @@ import type { UserDocument, UserModel } from '../types';
 const userSchema = new Schema<UserDocument>({
   name: {
     type: String,
-    required: true,
+    required: [true, 'Name is required!'],
     trim: true,
   },
   profile: {
@@ -18,12 +18,12 @@ const userSchema = new Schema<UserDocument>({
   },
   email: {
     type: String,
-    required: true,
+    required: [true, 'Email is required!'],
     trim: true,
   },
   password: {
     type: String,
-    required: true,
+    required: [true, 'Password is required!'],
     trim: true,
   },
   forgotpasstoken: { type: String },

@@ -4,11 +4,11 @@ import type { MessageDocument, MessageModel } from '../types';
 const messageSchema = new Schema<MessageDocument>({
   prompt: {
     type: String,
-    required: true,
+    required: [true, 'Prompt is required!'],
   },
   answer: {
     type: String,
-    required: true,
+    required: [true, 'Answer is required!'],
   },
   date: {
     type: Date,
