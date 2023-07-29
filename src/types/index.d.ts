@@ -8,4 +8,4 @@ export {
   customPayload,
 } from './User';
 export { ChunkObj } from './Stream';
-export { RobotDocument, RobotModel } from './Robot';
+export { BotDocument, BotModel } from './Bot';

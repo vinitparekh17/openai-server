@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import { AsyncHandler } from '../handlers';
 import type { EmailFormat } from '../types';
 import UserSchema from '../models/User.schema';
+import BotSchema from '../models/Bot.schema';
 import EmailService from '../lib/EmailService';
 import type { Request, Response } from 'express';
 import { Cookie, Err, Success, DataProvider, Logger } from '../utils';
@@ -27,6 +28,7 @@ export const signUp = AsyncHandler(
 export const signIn = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
     const { email, password } = req.body;
+    console.log(email, password);
     const existUser = await UserSchema.findOne({ email });
     if (existUser) {
       let matchPass = await bcrypt.compare(password, existUser.password);
@@ -104,9 +106,18 @@ export const Protected = AsyncHandler(
   }
 );
 
+export const profile = AsyncHandler(
+  async (req: Request, res: Response): Promise<Response> => {
+    let { id } = req.params;
+    let user = await DataProvider.getDataByID(UserSchema, id);
+    if (!user) return Err.send(res, 404, 'User not found');
+    let bots = await DataProvider.getDataBySearch(BotSchema, 'user', id);
+    if (user && !bots) return Success.send(res, 200, { user });
+    return Success.send(res, 200, { user, bots });
+  });
+
 export const signOut = AsyncHandler(
   async (_req: Request, res: Response): Promise<Response> => {
-    Logger.debug('Signout route triggered');
     res.clearCookie('chatplus-token');
     return res
       .status(200)

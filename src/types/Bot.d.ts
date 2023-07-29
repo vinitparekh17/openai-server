@@ -1,6 +1,6 @@
 import type { Model, Document, Schema } from 'mongoose';
 
-interface Robot {
+interface Bot {
   name: string;
   botType: string;
   gender: string;
@@ -9,7 +9,7 @@ interface Robot {
   user: Schema.Types.ObjectId;
 }
 
-export interface RobotModel extends Model<RobotDocument> {}
-export interface RobotDocument extends Robot, Document {
+export interface BotModel extends Model<BotDocument> {}
+export interface BotDocument extends Bot, Document {
   _id: string;
 }

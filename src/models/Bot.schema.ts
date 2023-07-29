@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
-import { RobotDocument, RobotModel } from '../types';
+import { BotDocument, BotModel } from '../types';
 
-const RobotSchema = new Schema<RobotDocument>({
+const RobotSchema = new Schema<BotDocument>({
   name: {
     type: String,
     required: [true, 'Name is required!'],
@@ -37,4 +37,4 @@ const RobotSchema = new Schema<RobotDocument>({
   },
 });
 
-export default model<RobotDocument, RobotModel>('Robot', RobotSchema);
+export default model<BotDocument, BotModel>('Bot', RobotSchema);

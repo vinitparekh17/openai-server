@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import RobotSchema from '../models/Robot.schema';
+import RobotSchema from '../models/Bot.schema';
 import { Err, Logger, Success } from '../utils';
 import { AsyncHandler } from '../handlers';
 
