@@ -13,7 +13,7 @@
   },
   "keywords": [
     "openai",
-    "charbot"
+    "chatbot"
   ],
   "author": "Vinit Parekh",
   "license": "ISC",
@@ -34,7 +34,9 @@
     "node-cache": "^5.1.2",
     "nodemailer": "^6.9.1",
     "openai": "^3.2.1",
+    "razorpay": "^2.9.0",
     "socket.io": "^4.6.1",
+    "stripe": "^12.10.0",
     "uuid": "^9.0.0",
     "winston": "^3.8.2"
   },
@@ -49,6 +51,7 @@
     "@types/morgan": "^1.9.4",
     "@types/node": "^18.15.11",
     "@types/nodemailer": "^6.4.7",
+    "@types/stripe": "^8.0.417",
     "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^5.45.1",
     "@typescript-eslint/parser": "^5.45.1",

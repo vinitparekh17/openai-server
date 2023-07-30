@@ -7,10 +7,25 @@ import { JWT_SECRET, JWT_EXPIRY } from '../config';
 import type { UserDocument, UserModel } from '../types';
 
 const userSchema = new Schema<UserDocument>({
-  name: { type: String, required: true },
-  profile: { type: Number, default: 0 },
-  email: { type: String, required: true },
-  password: { type: String, required: true },
+  name: {
+    type: String,
+    required: [true, 'Name is required!'],
+    trim: true,
+  },
+  profile: {
+    type: Number,
+    default: 0,
+  },
+  email: {
+    type: String,
+    required: [true, 'Email is required!'],
+    trim: true,
+  },
+  password: {
+    type: String,
+    required: [true, 'Password is required!'],
+    trim: true,
+  },
   forgotpasstoken: { type: String },
   forgotpassexpire: { type: Date },
 });

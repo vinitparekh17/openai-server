@@ -10,4 +10,7 @@ export const {
   REGION,
   JWT_SECRET,
   JWT_EXPIRY,
+  RAZORPAY_ID,
+  RAZORPAY_SECRET,
+  STRIPE: STRIPE_API,
 } = process.env;
