@@ -5,8 +5,6 @@ import UserSchema from '../models/User.schema';
 import { DataProvider } from '../utils/';
 import type { Response, NextFunction } from 'express';
 import type { AuthenticatedRequest, customPayload } from '../types';
-
-// can i turn above into a class?
 export class AuthMiddleware {
   static async requireAuth(
     req: AuthenticatedRequest,
