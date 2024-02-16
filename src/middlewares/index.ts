@@ -17,8 +17,11 @@ class Middlewares {
       app.use(
         morgan(
           ':method :url :status :res[content-length] - :response-time ms',
-          { stream, skip }
-        )
+          {
+            stream,
+            skip,
+          },
+        ),
       );
       app.use(cookieParser());
       app.use(express.json());
@@ -27,7 +30,7 @@ class Middlewares {
           origin: ['http://localhost:3000', 'https://omnisive.technetic.co.in'],
           methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
           credentials: true,
-        })
+        }),
       );
       app.use(ErrorHandler.handle());
     } catch (error) {

@@ -1,4 +1,3 @@
-import type { Request } from 'express';
 import type { JwtPayload } from 'jsonwebtoken';
 import type { Model, Document } from 'mongoose';
 
@@ -7,6 +6,7 @@ interface User extends Document {
   profile: number;
   email: string;
   password: string;
+  role: string;
   forgotpasstoken: string;
   forgotpassexpire: Date;
 }
@@ -22,10 +22,17 @@ export interface UserModel extends Model<UserDocument> {
   findByEmail(): Promise<object>;
 }
 
-export interface AuthenticatedRequest extends Request {
-  user: UserDocument;
+declare module 'express' {
+  interface Request {
+    user: UserDocument;
+  }
 }
 
 export type customPayload = JwtPayload & {
-  _id?: string;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    profile: Number;
+  };
 };

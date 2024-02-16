@@ -8,7 +8,6 @@ interface Bot {
   avatar: number;
   user: Schema.Types.ObjectId;
 }
-
 export interface BotModel extends Model<BotDocument> {}
 export interface BotDocument extends Bot, Document {
   _id: string;

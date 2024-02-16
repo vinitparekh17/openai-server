@@ -11,8 +11,8 @@ export default class MongoDB {
       };
       await connect(MONGO_URI, options);
       console.log('MongoDB connected');
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      error instanceof Error && console.error(error.message);
       process.exit(1);
     }
   }

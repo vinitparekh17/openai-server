@@ -1,5 +1,5 @@
 import { createTransport } from 'nodemailer';
-import { EmailFormat } from '../types';
+import { EmailFormat } from '../../interface';
 
 export default class EmailService {
   private optionData: EmailFormat;

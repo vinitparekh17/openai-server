@@ -1,56 +1,87 @@
 import bcrypt from 'bcryptjs';
 import crypto from 'node:crypto';
 import { AsyncHandler } from '../handlers';
-import type { EmailFormat } from '../types';
 import UserSchema from '../models/User.schema';
+import GoogleUserSchema from '../models/GoogleUser.schema';
 import BotSchema from '../models/Bot.schema';
-import EmailService from '../lib/EmailService';
+import { EmailFormat } from '../interface';
+import EmailService from '../lib/common/EmailService';
 import type { Request, Response } from 'express';
 import { Cookie, Err, Success, DataProvider, Logger } from '../utils';
 
 export const signUp = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
-    const { firstName, lastName, email, password } = req.body;
-    let savedUser = await UserSchema.findOne({ email });
-    if (!savedUser) {
-      let newUser = await UserSchema.create({
-        userName: `${firstName} ${lastName}`,
-        email,
-        password,
-      });
-      return Cookie.send(res, newUser, 201);
+    const { type } = req.query;
+    if (type === 'normal') {
+      const { firstName, lastName, email, password } = req.body;
+      console.log(req.body);
+
+      if (!firstName || !lastName || !email || !password)
+        return Err.send(res, 400, 'Please fill all the fields!');
+      let existUser = await UserSchema.findOne({ email });
+      if (!existUser) {
+        let newUser = await UserSchema.create({
+          name: `${firstName} ${lastName}`,
+          email,
+          password,
+        });
+        return Cookie.send(res, req, newUser, 201);
+      } else {
+        return Err.send(res, 409, 'User with this email already exists! ');
+      }
+    } else if (type === 'google') {
+      const { email, profile, name, expire } = req.body;
+      console.log(req.body);
+
+      const existUser = await GoogleUserSchema.findOne({ email });
+      if (!existUser) {
+        const newUser = await GoogleUserSchema.create({
+          email,
+          profile,
+          name,
+          expire,
+        });
+        return Cookie.send(res, req, newUser, 201);
+      } else {
+        return Err.send(
+          res,
+          409,
+          'User with this email already exists go to login! ',
+        );
+      }
     } else {
-      return Err.send(res, 409, 'User with this email already exists! ');
+      return Err.send(res, 400, 'Invalid request type!');
     }
-  }
+  },
 );
 
 export const signIn = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
-    const { email, password } = req.body;
-    console.log(email, password);
-    const existUser = await UserSchema.findOne({ email });
-    if (existUser) {
-      let matchPass = await bcrypt.compare(password, existUser.password);
-      if (matchPass) {
-        return Cookie.send(res, existUser, 200);
+    const { type } = req.query as { type: 'normal' | 'google' };
+    if (type === 'normal') {
+      const { email, password } = req.body;
+      const existUser = await UserSchema.findOne({ email });
+      if (existUser) {
+        let matchPass = await bcrypt.compare(password, existUser.password);
+        if (matchPass) {
+          return Cookie.send(res, req, existUser, 200);
+        }
+        return Err.send(res, 400, 'Invalid credentials');
+      }
+      return Err.send(res, 400, 'Invalid credentials');
+    } else if (type === 'google') {
+      const { email } = req.body;
+      const existUser = await GoogleUserSchema.findOne({ email });
+      if (existUser) {
+        return Cookie.send(res, req, existUser, 200);
       }
       return Err.send(res, 400, 'Invalid credentials');
     }
-    return Err.send(res, 400, 'Invalid credentials');
-  }
-);
-
-export const getUser = AsyncHandler(
-  async (req: Request, res: Response): Promise<any> => {
-    const { id } = req.params;
-    let user = await DataProvider.getDataByID(UserSchema, id);
-    Success.send(res, 200, user);
-  }
+  },
 );
 
 export const forgotPassword = AsyncHandler(
-  async (req: Request, res: Response): Promise<any> => {
+  async (req: Request, res: Response): Promise<Response> => {
     let { email } = req.body;
     let existUser = await DataProvider.getByEmail(UserSchema, email);
     if (!existUser) {
@@ -59,7 +90,7 @@ export const forgotPassword = AsyncHandler(
     let token = existUser.getForgotToken();
     await existUser.save({ validateBeforeSave: false });
     let url = `${req.protocol}://${req.get(
-      'host'
+      'host',
     )}/api/passward/reset/${token}`;
     let options: EmailFormat = {
       to: email,
@@ -71,7 +102,7 @@ export const forgotPassword = AsyncHandler(
     return emailStatus
       ? Success.send(res, 201, 'Email has been sent to you')
       : Err.send(res, 401, 'Unable to send email!');
-  }
+  },
 );
 
 export const passwardReset = AsyncHandler(
@@ -94,16 +125,7 @@ export const passwardReset = AsyncHandler(
     foundUser.forgotpasstoken = undefined;
     foundUser.forgotpassexpire = undefined;
     await foundUser.save();
-  }
-);
-
-export const Protected = AsyncHandler(
-  async (_req: Request, res: Response): Promise<Response> => {
-    Logger.debug('Protected route triggered');
-    return res
-      .status(200)
-      .json({ success: true, message: 'Protected route triggered' });
-  }
+  },
 );
 
 export const profile = AsyncHandler(
@@ -114,13 +136,14 @@ export const profile = AsyncHandler(
     let bots = await DataProvider.getDataBySearch(BotSchema, 'user', id);
     if (user && !bots) return Success.send(res, 200, { user });
     return Success.send(res, 200, { user, bots });
-  });
+  },
+);
 
 export const signOut = AsyncHandler(
   async (_req: Request, res: Response): Promise<Response> => {
-    res.clearCookie('chatplus-token');
     return res
+      .clearCookie('chatplus-token')
       .status(200)
-      .json({ success: true, message: 'Signout successfully' });
-  }
+      .json({ success: true, message: 'Successfully logged out!' });
+  },
 );

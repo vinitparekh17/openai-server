@@ -1,8 +1,8 @@
 import type { Server } from 'node:http';
-import { Cache } from './lib/Node-Cache';
+import { Cache } from './lib/common/Node-Cache';
 import { app } from './app';
 import { Logger } from './utils/';
-import { SocketServer } from './lib/Socket';
+import { SocketServer } from './lib/socket.io/Socket';
 import { PORT } from './config';
 
 export const server: Server = app.listen(PORT);

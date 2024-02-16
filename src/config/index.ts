@@ -13,4 +13,5 @@ export const {
   RAZORPAY_ID,
   RAZORPAY_SECRET,
   STRIPE: STRIPE_API,
+  GOOGLE_PROJECT_ID,
 } = process.env;

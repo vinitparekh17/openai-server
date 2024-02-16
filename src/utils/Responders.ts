@@ -1,5 +1,6 @@
-import { Response } from 'express';
-import { UserDocument } from '../types/User';
+import { Response, Request } from 'express';
+import { UserDocument } from '../interface/User';
+import { GoogleUserDocument } from '../interface';
 
 export class Success {
   static send(res: Response, statusCode: number, data: object | string) {
@@ -14,7 +15,12 @@ export class Err {
 }
 
 export class Cookie {
-  static send(res: Response, user: UserDocument, statusCode: number) {
+  static send(
+    res: Response,
+    req: Request,
+    user: UserDocument | GoogleUserDocument,
+    statusCode: number,
+  ) {
     let token = user.getJWT();
     return res
       .status(statusCode)

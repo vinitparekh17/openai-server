@@ -1,5 +1,5 @@
 import express from 'express';
-import  { cpus, arch, machine, platform } from 'node:os';
+import { cpus, arch, machine, platform } from 'node:os';
 import type { Application, Request, Response } from 'express';
 import { Middlewares, SocketMiddleware } from './middlewares';
 import Mongodb from './lib/Db';
@@ -22,7 +22,7 @@ app.get('/health', (req, res) => {
     cpus: cpus().length,
     arch: arch(),
     machine: machine(),
-    platform: platform()
+    platform: platform(),
   });
 });
 app.use('/api/user', userRoutes);

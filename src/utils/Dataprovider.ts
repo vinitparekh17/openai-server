@@ -15,7 +15,7 @@ export class DataProvider {
   static async getDataBySearch(
     model: Model<any>,
     k: string,
-    v: string
+    v: string,
   ): Promise<any[]> {
     try {
       const data = await model.find({ [k]: v });
@@ -40,7 +40,7 @@ export class DataProvider {
 
   static async getByEmail(
     model: Model<any>,
-    email: string
+    email: string,
   ): Promise<any | null> {
     try {
       let data = await model.findOne({ email });

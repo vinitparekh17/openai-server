@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { BotDocument, BotModel } from '../types';
+import { BotDocument, BotModel } from '../interface';
 
 const RobotSchema = new Schema<BotDocument>({
   name: {

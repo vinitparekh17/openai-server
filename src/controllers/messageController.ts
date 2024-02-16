@@ -12,10 +12,10 @@ export const getConversation = AsyncHandler(
       const data = await DataProvider.getDataBySearch(
         messageSchema,
         'user',
-        uid
+        uid,
       );
       if (!data) return Err.send(res, 404, 'Data not found!');
       return Success.send(res, 200, data);
     }
-  }
+  },
 );

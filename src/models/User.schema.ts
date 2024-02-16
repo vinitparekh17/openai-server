@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import crypto from 'node:crypto';
 import { JWT_SECRET, JWT_EXPIRY } from '../config';
-import type { UserDocument, UserModel } from '../types';
+import type { UserDocument, UserModel } from '../interface';
 
 const userSchema = new Schema<UserDocument>({
   name: {
@@ -26,6 +26,12 @@ const userSchema = new Schema<UserDocument>({
     required: [true, 'Password is required!'],
     trim: true,
   },
+  role: {
+    type: String,
+    required: [true, 'Role is required!'],
+    default: 'USER',
+    enum: ['USER', 'ADMIN'],
+  },
   forgotpasstoken: { type: String },
   forgotpassexpire: { type: Date },
 });
@@ -43,7 +49,7 @@ userSchema.pre<UserDocument>(
     } catch (error) {
       console.log(error);
     }
-  }
+  },
 );
 
 userSchema.methods = {
@@ -55,7 +61,7 @@ userSchema.methods = {
   },
 
   validatePassword: async function (
-    usersAndPassward: string
+    usersAndPassward: string,
   ): Promise<Boolean> {
     return await bcrypt.compare(usersAndPassward, this.password);
   },
@@ -73,7 +79,7 @@ userSchema.methods = {
       JWT_SECRET,
       {
         expiresIn: JWT_EXPIRY,
-      }
+      },
     );
   },
 };

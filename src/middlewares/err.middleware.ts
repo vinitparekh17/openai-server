@@ -7,7 +7,7 @@ export class ErrorHandler {
       err: ApiError,
       req: Request,
       res: Response,
-      next: NextFunction
+      next: NextFunction,
     ) => {
       const statusCode = err.statusCode || 500;
       res.status(statusCode).send({
