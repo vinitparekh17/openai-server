@@ -1,7 +1,7 @@
 import { io } from '../index';
 import type { Socket } from 'socket.io';
 import { customPayload } from '../interface';
-import { decodeToken } from '../utils/';
+import { JwtHelper } from '../utils/';
 import { Cache } from '../lib/common/Node-Cache';
 
 export class SocketMiddleware {
@@ -12,7 +12,7 @@ export class SocketMiddleware {
         if (!token) {
           new Error('Unauthorized');
         } else {
-          let decoded = decodeToken(token);
+          let decoded = JwtHelper.verifyToken(token);
           if (decoded === 'expired') {
             next(new Error('Token expired'));
           } else if (decoded === 'error') {
@@ -45,16 +45,6 @@ export class SocketMiddleware {
         });
         return cookieObj['chatplus-token'];
       }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  static getIdFromToken(CookieToken: string): string {
-    try {
-      let decoded = decodeToken(CookieToken);
-      let { data } = decoded as customPayload;
-      return data.id;
     } catch (error) {
       console.log(error);
     }

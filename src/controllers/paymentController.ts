@@ -3,10 +3,24 @@ import { stripeClient } from '../lib/payment/Stripe';
 import { AsyncHandler } from '../handlers';
 import { RazorpayClient } from '../lib/payment/Razorpay';
 import { Err, Success } from '../utils';
+import { STRIPE_ACCOUNT_ID, STRIPE_SECRET } from '../config';
 
-export const RetriveSecret = AsyncHandler(
+export const CreateStripePaymentIntent = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
-    return Success.send(res, 200, 'Hello World');
+    const { amount } = req.body;
+    
+    const paymentIntent = await stripeClient.paymentIntents.create({
+      amount: parseInt(amount),
+      currency: 'inr',
+      payment_method_types: ["card"],
+      automatic_payment_methods: {
+        enabled: true
+      }
+    }, {
+      apiKey: STRIPE_SECRET,
+      stripeAccount: STRIPE_ACCOUNT_ID
+    })
+    return Success.send(res, 200, paymentIntent.client_secret);
   },
 );
 
@@ -25,6 +39,7 @@ export const StripePay = AsyncHandler(
       payment_settings: { save_default_payment_method: 'on_subscription' },
       expand: ['latest_invoice'],
     });
+
     if (subscription) {
       return Success.send(res, 200, {
         subscriptionId: subscription.id,
@@ -36,32 +51,15 @@ export const StripePay = AsyncHandler(
 );
 
 export const RazorPay = AsyncHandler(async (req: Request, res: Response) => {
-  const { plan } = req.body;
-  let options = {
-    amount: 0,
+  const { amount } = req.body;
+
+  RazorpayClient.orders.create({
+    amount: parseInt(amount),
     currency: 'INR',
+    method: 'upi',
     payment_capture: true,
     receipt: new Date().getMilliseconds().toString(),
-  };
-
-  switch (parseInt(plan)) {
-    case 1:
-      options['amount'] = 99 * 100;
-      break;
-    case 2:
-      options['amount'] = 249 * 100;
-      break;
-    case 3:
-      options['amount'] = 299 * 100;
-      break;
-    default:
-      options['amount'] = 99 * 100;
-  }
-  RazorpayClient.orders.create(
-    {
-      method: 'upi',
-      ...options,
-    },
+  },
     (err, order) => {
       if (err) {
         return Err.send(res, 500, err.error.reason);

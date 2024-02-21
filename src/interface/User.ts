@@ -28,7 +28,7 @@ declare module 'express' {
   }
 }
 
-export type customPayload = JwtPayload & {
+export interface customPayload extends JwtPayload {
   data: {
     id: string;
     name: string;

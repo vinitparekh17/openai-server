@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { Logger } from '../utils/';
-import { decodeToken } from '../utils/JwtDecoder';
+import { JwtHelper } from '../utils/JwtDecoder';
 import { Err } from '../utils/Responders';
 import UserSchema from '../models/User.schema';
 import { DataProvider } from '../utils/';
@@ -15,7 +15,7 @@ export class AuthMiddleware {
       return Err.send(res, 401, 'Unauthorized');
     }
     try {
-      const decoded = decodeToken(token);
+      const decoded = JwtHelper.verifyToken(token);
       if (decoded === 'expired') {
         return Err.send(res, 406, 'Token expired');
       } else if (decoded === 'error') {

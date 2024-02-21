@@ -4,6 +4,7 @@ import { Server as SocketIOServer, Socket } from 'socket.io';
 import { SocketMiddleware } from '../../middlewares';
 import { GenerativeModel } from '../google/Vertex';
 import { StramSaver } from '../../utils/StreamSaver';
+import { JwtHelper } from '../../utils';
 
 export class SocketServer {
   static io: SocketIOServer;
@@ -35,7 +36,7 @@ export class SocketServer {
 
         try {
           // Get user's id which is the cache key (from cookie)...
-          cacheKey = SocketMiddleware.getIdFromToken(
+          cacheKey = JwtHelper.getUserIdFromToken(
             SocketMiddleware.getCookieToken(socket)
           );
 
@@ -80,7 +81,7 @@ export class SocketServer {
         console.log(`Client ${socket.id} disconnected`);
         this.toUser = null;
         this.completeResponse = "";
-        this.cacheKey = SocketMiddleware.getIdFromToken(
+        this.cacheKey = JwtHelper.getUserIdFromToken(
           SocketMiddleware.getCookieToken(this.socket)
         );
         Cache.del(this.cacheKey);

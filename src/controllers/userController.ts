@@ -7,14 +7,13 @@ import BotSchema from '../models/Bot.schema';
 import { EmailFormat } from '../interface';
 import EmailService from '../lib/common/EmailService';
 import type { Request, Response } from 'express';
-import { Cookie, Err, Success, DataProvider, Logger } from '../utils';
+import { Cookie, Err, Success, DataProvider } from '../utils';
 
 export const signUp = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
     const { type } = req.query;
     if (type === 'normal') {
       const { firstName, lastName, email, password } = req.body;
-      console.log(req.body);
 
       if (!firstName || !lastName || !email || !password)
         return Err.send(res, 400, 'Please fill all the fields!');
@@ -31,7 +30,6 @@ export const signUp = AsyncHandler(
       }
     } else if (type === 'google') {
       const { email, profile, name, expire } = req.body;
-      console.log(req.body);
 
       const existUser = await GoogleUserSchema.findOne({ email });
       if (!existUser) {
