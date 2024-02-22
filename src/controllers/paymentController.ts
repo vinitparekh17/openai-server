@@ -10,7 +10,7 @@ export const CreateStripePaymentIntent = AsyncHandler(
     const { amount } = req.body;
     
     const paymentIntent = await stripeClient.paymentIntents.create({
-      amount: parseInt(amount),
+      amount: parseInt(amount) * 100,
       currency: 'inr',
       payment_method_types: ["card"],
       automatic_payment_methods: {
