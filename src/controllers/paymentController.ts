@@ -13,9 +13,7 @@ export const CreateStripePaymentIntent = AsyncHandler(
       amount: parseInt(amount) * 100,
       currency: 'inr',
       payment_method_types: ["card"],
-      automatic_payment_methods: {
-        enabled: true
-      }
+      setup_future_usage: 'off_session'
     }, {
       apiKey: STRIPE_SECRET,
       stripeAccount: STRIPE_ACCOUNT_ID
