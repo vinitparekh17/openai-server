@@ -6,6 +6,7 @@ import Mongodb from './lib/Db';
 import userRoutes from './routes/user';
 import chatRoutes from './routes/chat';
 import paymentRoutes from './routes/payment';
+import adminRoutes from './routes/admin';
 
 export const app: Application = express();
 
@@ -28,6 +29,7 @@ app.get('/health', (req, res) => {
 app.use('/api/user', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/admin/', adminRoutes);
 app.use('*', (req: Request, res: Response) => {
   const err = Error(`Requested path: ${req.path} not found!`);
   res.status(404).json({

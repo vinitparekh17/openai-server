@@ -26,12 +26,34 @@ export class DataProvider {
     }
   }
 
-  static async getDataByID(model: Model<any>, id: string): Promise<any | null> {
+  static async updateDataById<T, U>(model: Model<T>,id: string , object: U): Promise<any>{
+    try {
+       const data = await model.findByIdAndUpdate(id, object);
+       if(!data) return;
+       return data
+    } catch (error) {
+      Logger.error(error)
+    }
+  }
+
+  static async getDataByID<T>(model: Model<T>, id: string): Promise<any | null> {
     try {
       if (!Types.ObjectId.isValid(id)) {
         return null;
       }
       let data = await model.findById(id);
+      return data;
+    } catch (e) {
+      Logger.error(e);
+    }
+  }
+
+  static async deleteDataById<T>(model: Model<T>, id: string): Promise<any | null> {
+    try {
+      if (!Types.ObjectId.isValid(id)) {
+        return null;
+      }
+      let data = await model.findByIdAndDelete(id);
       return data;
     } catch (e) {
       Logger.error(e);

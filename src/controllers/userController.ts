@@ -3,7 +3,6 @@ import crypto from 'node:crypto';
 import { AsyncHandler } from '../handlers';
 import UserSchema from '../models/User.schema';
 import GoogleUserSchema from '../models/GoogleUser.schema';
-import BotSchema from '../models/Bot.schema';
 import { EmailFormat } from '../interface';
 import EmailService from '../lib/common/EmailService';
 import type { Request, Response } from 'express';
@@ -128,12 +127,9 @@ export const passwardReset = AsyncHandler(
 
 export const profile = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
-    let { id } = req.params;
-    let user = await DataProvider.getDataByID(UserSchema, id);
+    let user = req.user;
     if (!user) return Err.send(res, 404, 'User not found');
-    let bots = await DataProvider.getDataBySearch(BotSchema, 'user', id);
-    if (user && !bots) return Success.send(res, 200, { user });
-    return Success.send(res, 200, { user, bots });
+    return Success.send(res, 200, { user });
   },
 );
 

@@ -1,5 +1,6 @@
 import { connect, ConnectOptions } from 'mongoose';
 import { MONGO_URI } from '../config';
+import { Logger } from '../utils';
 
 export default class MongoDB {
   static async init() {
@@ -10,7 +11,7 @@ export default class MongoDB {
         keepAlive: true,
       };
       await connect(MONGO_URI, options);
-      console.log('MongoDB connected');
+      Logger.debug('MongoDB connected...');
     } catch (error: unknown) {
       error instanceof Error && console.error(error.message);
       process.exit(1);
