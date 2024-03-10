@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  nginx:
+    container_name: nginx-reverse-proxy
+    image: nginx:latest  # Use the latest version (optional)
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - omnisive-server  # Ensuring Nginx starts after the server
+    networks:
+      - omnisive-network
+
+
+  omnisive-server:
+    container_name: omnisive-server
+    image: vparekh17/aiserver:latest
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    networks:
+      - omnisive-network
+
+networks:
+  omnisive-network:
+    driver: bridge

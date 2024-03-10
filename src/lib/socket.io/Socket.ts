@@ -4,7 +4,7 @@ import { Server as SocketIOServer, Socket } from 'socket.io';
 import { SocketMiddleware } from '../../middlewares';
 import { GenerativeModel } from '../google/Vertex';
 import { StramSaver } from '../../utils/StreamSaver';
-import { JwtHelper } from '../../utils';
+import { JwtHelper, Logger } from '../../utils';
 
 export class SocketServer {
   static io: SocketIOServer;
@@ -16,7 +16,6 @@ export class SocketServer {
     SocketServer.io = new SocketIOServer(server, {
       cors: {
         origin: ['https://omnisive.technetic.co.in', 'http://localhost:*'],
-        methods: ['GET', 'POST'],
         credentials: true,
       },
     });
@@ -27,7 +26,7 @@ export class SocketServer {
     let { io } = SocketServer;
     io.on('connect', (socket: Socket) => {
       this.socket = socket;
-      console.log(`Client ${socket.id} connected`);
+      Logger.debug(`Client ${socket.id} connected`);
       socket.on('request-stream', async (prompt) => {
 
         // declare variables for socket...

@@ -11,7 +11,7 @@ export default class MongoDB {
         keepAlive: true,
       };
       await connect(MONGO_URI, options);
-      Logger.debug('MongoDB connected...');
+      Logger.info('MongoDB connected...');
     } catch (error: unknown) {
       error instanceof Error && console.error(error.message);
       process.exit(1);

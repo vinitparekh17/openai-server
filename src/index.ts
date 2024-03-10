@@ -11,13 +11,13 @@ export const { io } = SocketServer;
 class NodeServer {
   static start() {
     try {
-      Logger.debug('Starting server...');
+      Logger.info('Starting server...');
       Cache.flushAll();
       setInterval(() => {
         Cache.flushAll();
       }, 1000 * 60 * 60 * 24);
       server.on('listening', () => {
-        Logger.debug(`Server started on port ${PORT}`);
+        Logger.info(`Server started on port ${PORT}`);
       });
     } catch (error) {
       Logger.error(error);
