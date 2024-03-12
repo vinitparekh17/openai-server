@@ -28,7 +28,6 @@ class Middlewares {
       app.use(
         cors({
           origin: ['http://localhost:3000', 'https://omnisive.technetic.co.in'],
-          methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
           credentials: true,
         }),
       );
