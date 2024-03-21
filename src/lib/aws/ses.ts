@@ -1,7 +1,8 @@
 import * as aws from '@aws-sdk/client-ses';
 import { createTransport } from 'nodemailer';
 import { EmailFormat } from '../../interface';
-import { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION } from '../../config';
+import { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION , FROM_EMAIL} from '../../config';
+import { Logger } from '../../utils';
 
 const ses = new aws.SES({
     apiVersion: "2010-12-01",
@@ -21,14 +22,17 @@ export default class EmailService {
     public static async sendMail(option: EmailFormat): Promise<Boolean> {
         try {
             console.log(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, option)
-            EmailService.transporter.sendMail(option, (err, info) => {
+            EmailService.transporter.sendMail({
+                from: FROM_EMAIL,
+                ...option
+            }, (err) => {
                 if (err) {
-                    console.log(err);
+                    Logger.error(err.message)
                 }
-                console.log(info.envelope)
             })
             return true;
         } catch (error) {
+            Logger.error(error.message)
             return false;
         }
     }

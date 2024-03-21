@@ -16,29 +16,16 @@ const GoogleUserSchema = new Schema<GoogleUserDocument>({
     type: String,
     required: [true, 'Email is required!'],
     trim: true,
-  },
-  expire: {
-    type: Number,
-    required: [true, 'Exp. must be provided'],
-  },
+  }
 });
 
 GoogleUserSchema.methods = {
   getJWT: function (): string {
-    return jwt.sign(
-      {
-        data: {
-          id: this._id,
-          name: this.name,
-          email: this.email,
-          profile: this.profile,
-        },
-      },
-      JWT_SECRET,
-      {
-        expiresIn: JWT_EXPIRY,
-      },
-    );
+    return jwt.sign({
+      data: { id: this._id },
+    }, JWT_SECRET, {
+      expiresIn: JWT_EXPIRY,
+    });
   },
 };
 

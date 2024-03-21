@@ -36,8 +36,7 @@ const userSchema = new Schema<UserDocument>({
   forgotpassexpire: { type: Date },
 });
 
-userSchema.pre<UserDocument>(
-  'save',
+userSchema.pre<UserDocument>('save',
   async function (this: UserDocument, next: NextFunction) {
     if (!this.isModified('password')) return next();
     try {
@@ -56,7 +55,7 @@ userSchema.methods = {
   getForgotToken: function (): string {
     const forgotToken = crypto.randomBytes(20).toString('hex');
     this.forgotpasstoken = forgotToken;
-    this.forgotpassexpire = Date.now() + 60 * 1000;
+    this.forgotpassexpire = Date.now() + 5 * 60 * 1000;
     return forgotToken;
   },
 

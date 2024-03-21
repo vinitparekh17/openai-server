@@ -9,7 +9,10 @@ interface Message {
   prompt: MessageFormat;
   answer: MessageFormat;
   date: Date;
-  user: Schema.Types.ObjectId;
+  user: {
+    _id: Schema.Types.ObjectId;
+    name: string;
+  }
 }
 
 export interface MessageModel extends Model<MessageDocument> {}
