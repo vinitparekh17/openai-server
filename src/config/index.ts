@@ -4,11 +4,11 @@ dotenv.config();
 export const {
   PORT,
   MONGO_URI,
-  
+
   AWS_ACCESS_KEY_ID,
   AWS_SECRET_ACCESS_KEY,
-  REGION,
-
+  AWS_REGION,
+  
   JWT_SECRET,
   JWT_EXPIRY,
 

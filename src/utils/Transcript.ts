@@ -1,12 +1,11 @@
-import Template from '../lib/Handlebars';
+import Template from '../lib/handlebar';
 import { Logger } from './';
 import MessageSchema from '../models/Message.schema';
-import { DataProvider } from './';
 
 export class Transcript {
   static async ganerate(id: string): Promise<string | null> {
     try {
-      let data = await DataProvider.getDataBySearch(MessageSchema, 'user', id);
+      let data = await MessageSchema.find({user: id});
       if (data.length == 0) {
         return null;
       }

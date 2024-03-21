@@ -69,10 +69,7 @@ userSchema.methods = {
   getJWT: function (): string {
     return jwt.sign({
       data: {
-        id: this._id,
-        name: this.name,
-        email: this.email,
-        profile: this.profile,
+        id: this._id
       }
     }, JWT_SECRET, {
       expiresIn: JWT_EXPIRY,

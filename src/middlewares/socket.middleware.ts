@@ -2,7 +2,7 @@ import { io } from '../index';
 import type { Socket } from 'socket.io';
 import { customPayload } from '../interface';
 import { JwtHelper } from '../utils/';
-import { Cache } from '../lib/common/Node-Cache';
+import { Cache } from '../lib/node-cache';
 
 export class SocketMiddleware {
   static init() {

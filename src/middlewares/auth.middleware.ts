@@ -3,7 +3,6 @@ import { Logger } from '../utils/';
 import { JwtHelper } from '../utils/JwtDecoder';
 import { Err } from '../utils/Responders';
 import UserSchema from '../models/User.schema';
-import { DataProvider } from '../utils/';
 import type { Response, NextFunction } from 'express';
 import type { customPayload } from '../interface';
 
@@ -24,7 +23,7 @@ export class AuthMiddleware {
         return Err.send(res, 400, 'Invalid token');
       } else {
         let { data } = decoded as customPayload;
-        let user = await DataProvider.getDataByID(UserSchema, data.id);
+        let user = await UserSchema.findById(data.id).select('-password');
         if (user) {
           req.user = user;
         } else {

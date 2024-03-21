@@ -1,6 +1,6 @@
 import { connect, ConnectOptions } from 'mongoose';
-import { MONGO_URI } from '../config';
-import { Logger } from '../utils';
+import { MONGO_URI } from '../../config';
+import { Logger } from '../../utils';
 
 export default class MongoDB {
   static async init() {

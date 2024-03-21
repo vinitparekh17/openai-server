@@ -1,11 +1,9 @@
 import type { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import { DataProvider, Success, Err, Cookie } from "../utils";
+import { Success, Err, Cookie } from "../utils";
 import { AsyncHandler } from "../handlers";
 import UserSchema from "../models/User.schema";
-import MessageSchema from '../models/Message.schema';
 import GoogleUserSchema from '../models/GoogleUser.schema';
-import { MessageDocument, MessageModel } from '../interface';
 
 export const signIn = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
@@ -46,7 +44,7 @@ export const signIn = AsyncHandler(
 export const GetAllUsers = AsyncHandler(
   async (_: Request, res: Response): Promise<Response> => {
 
-    let userData = await DataProvider.getData(UserSchema);
+    let userData = await UserSchema.find();
     if (userData.length == 0) return Err.send(res, 404, 'Users not found');
     return Success.send(res, 200, userData);
   })
@@ -56,25 +54,25 @@ export const GetUserById = AsyncHandler(
 
     const { id } = req.params;
 
-    let userData = await DataProvider.getDataByID(UserSchema, id);
+    let userData = await UserSchema.findById(id);
 
-    if (userData.length == 0) return Err.send(res, 404, 'Users not found');
     return Success.send(res, 200, userData);
-  })
+  }
+  )
 
 export const DeleteUserById = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
 
-    let userData = await DataProvider.deleteDataById(UserSchema, id);
-    if (userData.length == 0) return Err.send(res, 404, 'Users not found');
+    let userData = await UserSchema.findByIdAndDelete(id);
     return Success.send(res, 200, userData);
-  })
+  }
+  )
 
 export const UpdateUserById = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
-    let userData = await DataProvider.updateDataById(UserSchema, id, req.body);
-    if (userData.length == 0) return Err.send(res, 404, 'Users not found');
+    let userData = await UserSchema.findByIdAndUpdate(id, req.body);
     return Success.send(res, 200, userData);
-  })
+  }
+  )

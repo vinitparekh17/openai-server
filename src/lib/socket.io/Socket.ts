@@ -1,10 +1,14 @@
 import { Server } from 'http';
-import { Cache } from '../common/Node-Cache';
+import { Cache } from '../node-cache';
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { SocketMiddleware } from '../../middlewares';
-import { GenerativeModel } from '../google/Vertex';
+import { GenerativeModel } from '../google/vertex';
 import { StramSaver } from '../../utils/StreamSaver';
 import { JwtHelper, Logger } from '../../utils';
+import { speechClient } from '../google/speech';
+import { AiResponder } from '../../utils/AiResponder';
+import { StreamType } from '../../interface/Stream';
+import { pollyClient, pollyCommand } from '../aws/polly';
 
 export class SocketServer {
   static io: SocketIOServer;
@@ -27,55 +31,52 @@ export class SocketServer {
     io.on('connect', (socket: Socket) => {
       this.socket = socket;
       Logger.debug(`Client ${socket.id} connected`);
-      socket.on('request-stream', async (prompt) => {
 
-        // declare variables for socket...
-        let { completeResponse, cacheKey, toUser } = this;
-        completeResponse = "";
+      socket.on('request-stream', async (prompt: string) => {
 
         try {
-          // Get user's id which is the cache key (from cookie)...
-          cacheKey = JwtHelper.getUserIdFromToken(
-            SocketMiddleware.getCookieToken(socket)
-          );
 
-          // Get socket id from cache...
-          toUser = Cache.get(cacheKey);
-
-          if (toUser) {
-            // Create a response stream...
-            const responseStream = await GenerativeModel.generateContentStream({
-              contents: [{
-                role: "user",
-                parts: [{ text: prompt }]
-              }]
-            })
-            // Transmit the response stream to the user...
-            for await (const chunks of responseStream.stream) {
-              // Emit the response to the user if socket id is found...
-              if (chunks.candidates[0].finishReason === 'SAFETY') {
-                SocketServer.io
-                  .to(toUser)
-                  .emit("response-stream", { data: 'Content has been terminated for safety reasons!' });
-              } else {
-                completeResponse += chunks.candidates[0].content.parts[0].text;
-              }
-            }
-
-            // Emit the response to the user...
-            if (completeResponse !== "") {
-              SocketServer.io
-                .to(toUser)
-                .emit("response-stream", { success: true, data: completeResponse })
-            }
-          }
+          this.completeResponse = await AiResponder(prompt);
+          this.EmitResponse(prompt, this.completeResponse, StreamType.TEXT);
 
           // Save the response stream to the database...
-          StramSaver.saveStream(cacheKey, prompt, completeResponse);
         } catch (error: unknown) {
           error instanceof Error && console.error(error.message);
         }
       });
+
+      socket.on('audio-stream', async (data: { audio: Int16Array, sampleRateHertz: number }) => {
+
+        speechClient.recognize({
+          config: {
+            encoding: 'LINEAR16',
+            sampleRateHertz: data.sampleRateHertz || 16000,
+            languageCode: 'en-US',
+          },
+          audio: {
+            content: new Uint8Array(data.audio),
+          }
+        })
+          .then(([response]) => {
+            const prompt = response.results
+              .map(prompt => prompt.alternatives[0].transcript)
+              .join('\n');
+
+            AiResponder(prompt)
+              .then(completeResponse => {
+                this.EmitResponse(prompt, completeResponse, StreamType.AUDIO);
+              })
+              .catch(error => {
+                console.error('Error:', error);
+              });
+
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          })
+
+      });
+
       socket.on('disconnect', () => {
         console.log(`Client ${socket.id} disconnected`);
         this.toUser = null;
@@ -87,5 +88,63 @@ export class SocketServer {
         this.cacheKey = '';
       });
     });
+  }
+
+  private async EmitResponse(prompt: string, completeResponse: string, streamType: StreamType) {
+    let { toUser, cacheKey, socket } = this;
+
+    cacheKey = JwtHelper.getUserIdFromToken(
+      SocketMiddleware.getCookieToken(socket)
+    );
+
+    // Get socket id from cache...
+    toUser = Cache.get(cacheKey);
+
+    if (toUser) {
+
+      if (completeResponse !== "" && completeResponse !== 'SAFETY') {
+
+        switch (streamType) {
+          case StreamType.TEXT:
+            SocketServer.io
+              .to(toUser)
+              .emit("response-stream", {
+                type: streamType,
+                answer: completeResponse
+              });
+            break;
+
+          case StreamType.AUDIO:
+
+            pollyClient.send(pollyCommand(completeResponse))
+              .then(response => {
+                const audioStream = response.AudioStream.transformToByteArray();
+                audioStream.then(audioStream => {
+                  SocketServer.io
+                    .to(toUser)
+                    .emit("response-stream", {
+                      type: streamType,
+                      answer: completeResponse,
+                      prompt,
+                      audioStream
+                    })
+                })
+              }).catch(error => {
+                console.error(error.message);
+              })
+            break;
+        }
+
+        StramSaver.saveStream(cacheKey, prompt, completeResponse);
+
+      } else {
+
+        SocketServer.io
+          .to(toUser)
+          .emit("response-stream", { data: `I'm sorry, I cannot respond to that` });
+
+      }
+
+    }
   }
 }

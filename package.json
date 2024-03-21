@@ -18,9 +18,11 @@
   "author": "Vinit Parekh",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-polly": "^3.310.0",
+    "@aws-sdk/client-polly": "^3.535.0",
     "@aws-sdk/client-s3": "^3.345.0",
-    "@google-cloud/vertexai": "^0.3.1",
+    "@aws-sdk/client-ses": "^3.535.0",
+    "@google-cloud/speech": "^6.3.0",
+    "@google-cloud/vertexai": "^0.5.0",
     "@types/socket.io": "^3.0.2",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",

@@ -1,5 +1,5 @@
 import type { Server } from 'node:http';
-import { Cache } from './lib/common/Node-Cache';
+import { Cache } from './lib/node-cache';
 import { app } from './app';
 import { Logger } from './utils/';
 import { SocketServer } from './lib/socket.io/Socket';

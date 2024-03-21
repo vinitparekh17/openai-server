@@ -3,13 +3,13 @@ import { UserDocument } from '../interface/User';
 import { GoogleUserDocument } from '../interface';
 
 export class Success {
-  static send(res: Response, statusCode: number, data: object | string) {
+  static send(res: Response, statusCode: number, data: object | string): Response {
     return res.status(statusCode).json({ success: true, data: data || null });
   }
 }
 
 export class Err {
-  static send(res: Response, statusCode: number, message: string) {
+  static send(res: Response, statusCode: number, message: string): Response {
     return res.status(statusCode).json({ success: false, message });
   }
 }
@@ -17,10 +17,10 @@ export class Err {
 export class Cookie {
   static send(
     res: Response,
-    req: Request,
+    _: Request,
     user: UserDocument | GoogleUserDocument,
     statusCode: number,
-  ) {
+  ): Response {
     let token = user.getJWT();
     return res
       .status(statusCode)

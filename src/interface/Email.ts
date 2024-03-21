@@ -1,6 +1,7 @@
 export interface EmailFormat {
+  from: string;
   to: string;
-  suject: string;
-  content: string;
+  subject: string;
+  text?: string;
   html?: string;
 }

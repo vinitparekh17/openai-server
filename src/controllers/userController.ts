@@ -4,9 +4,11 @@ import { AsyncHandler } from '../handlers';
 import UserSchema from '../models/User.schema';
 import GoogleUserSchema from '../models/GoogleUser.schema';
 import { EmailFormat } from '../interface';
-import EmailService from '../lib/common/EmailService';
+import EmailService from '../lib/aws/ses';
 import type { Request, Response } from 'express';
-import { Cookie, Err, Success, DataProvider } from '../utils';
+import { Cookie, Err, Success } from '../utils';
+import MessageSchema from '../models/Message.schema';
+import { PasswordResetTemplate, SignUpTemplate } from '../utils/Template';
 
 export const signUp = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
@@ -18,12 +20,20 @@ export const signUp = AsyncHandler(
         return Err.send(res, 400, 'Please fill all the fields!');
       let existUser = await UserSchema.findOne({ email });
       if (!existUser) {
+        EmailService.sendMail({
+          from: 'dcvinit1742@gmail.com',
+          to: email,
+          subject: 'Signed Up Successfully | Omnisive',
+          html: SignUpTemplate(`${firstName} ${lastName}`)
+        })
         let newUser = await UserSchema.create({
           name: `${firstName} ${lastName}`,
           email,
           password,
-        });
+        })
+
         return Cookie.send(res, req, newUser, 201);
+
       } else {
         return Err.send(res, 409, 'User with this email already exists! ');
       }
@@ -63,9 +73,9 @@ export const signIn = AsyncHandler(
         if (matchPass) {
           return Cookie.send(res, req, existUser, 200);
         }
-        return Err.send(res, 400, 'Invalid credentials');
+        return Err.send(res, 400, 'Password did not matched');
       }
-      return Err.send(res, 400, 'Invalid credentials');
+      return Err.send(res, 400, 'User with these credentials does not exists');
     } else if (type === 'google') {
       const { email } = req.body;
       const existUser = await GoogleUserSchema.findOne({ email });
@@ -80,26 +90,24 @@ export const signIn = AsyncHandler(
 export const forgotPassword = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
     let { email } = req.body;
-    let existUser = await DataProvider.getByEmail(UserSchema, email);
+    let existUser = await UserSchema.findOne({ email });
     if (!existUser) {
       return Err.send(res, 404, 'User with this email does not exists!');
     }
     let token = existUser.getForgotToken();
     await existUser.save({ validateBeforeSave: false });
-    let url = `${req.protocol}://${req.get(
-      'host',
-    )}/api/passward/reset/${token}`;
+    let url = `${req.protocol}://${req.get('host')}/passward/reset/${token}`;
     let options: EmailFormat = {
+      from: 'dcvinit1742@gmail.com',
       to: email,
-      suject: 'Forgot password token',
-      content: '',
-      html: `Click here to change your password! \n\n<center><a href="${url}" ><button>FORGOT PASSWORD</button></a><center>`,
+      subject: 'Password Reset Requested | Omnisive',
+      html: PasswordResetTemplate(url)
     };
-    let emailStatus = new EmailService(options).sendMail();
+    let emailStatus = EmailService.sendMail(options);
     return emailStatus
       ? Success.send(res, 201, 'Email has been sent to you')
       : Err.send(res, 401, 'Unable to send email!');
-  },
+  }
 );
 
 export const passwardReset = AsyncHandler(
@@ -122,15 +130,38 @@ export const passwardReset = AsyncHandler(
     foundUser.forgotpasstoken = undefined;
     foundUser.forgotpassexpire = undefined;
     await foundUser.save();
-  },
+  }
 );
 
 export const profile = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
     let user = req.user;
     if (!user) return Err.send(res, 404, 'User not found');
-    return Success.send(res, 200, { user });
-  },
+    return Success.send(res, 200, user);
+  }
+);
+
+export const updateAccount = AsyncHandler(
+  async (req: Request, res: Response): Promise<Response> => {
+    const { firstName, lastName, email, profile } = req.body
+    
+    const updatedUser = await UserSchema.findByIdAndUpdate(req.params.id, {
+      name: `${firstName} ${lastName}`,
+      email,
+      profile: parseInt(profile)
+    }, { new: true }).select('-password')
+    req.user = updatedUser
+    return Success.send(res, 200, updatedUser)
+  }
+);
+
+export const deleteAccount = AsyncHandler(
+  async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params
+    await UserSchema.findByIdAndDelete(id)
+    await MessageSchema.deleteMany({ user: id })
+    return Success.send(res, 202, "User has been deleted successfully")
+  }
 );
 
 export const signOut = AsyncHandler(
@@ -139,5 +170,5 @@ export const signOut = AsyncHandler(
       .clearCookie('chatplus-token')
       .status(200)
       .json({ success: true, message: 'Successfully logged out!' });
-  },
+  }
 );

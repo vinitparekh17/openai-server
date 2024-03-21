@@ -2,7 +2,7 @@ import express from 'express';
 import { cpus, arch, machine, platform } from 'node:os';
 import type { Application, Request, Response } from 'express';
 import { Middlewares, SocketMiddleware } from './middlewares';
-import Mongodb from './lib/Db';
+import Mongodb from './lib/mongodb';
 import userRoutes from './routes/user';
 import chatRoutes from './routes/chat';
 import paymentRoutes from './routes/payment';

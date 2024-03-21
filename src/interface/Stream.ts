@@ -1,14 +1,7 @@
-// export interface ChunkObj {
-//   data?: {
-//     choices: [
-//       {
-//         delta: {
-//           content?: string;
-//         };
-//       }
-//     ];
-//   };
-// }
+export enum StreamType {
+  TEXT = 'TEXT',
+  AUDIO = 'AUDIO',
+}
 
 export interface ChunkObj {
   candidates: [

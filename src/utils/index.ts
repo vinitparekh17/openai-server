@@ -1,4 +1,3 @@
-export { DataProvider } from './Dataprovider';
 export { JwtHelper } from './JwtDecoder';
 export { Logger } from './Logger';
 export { Transcript } from './Transcript';
