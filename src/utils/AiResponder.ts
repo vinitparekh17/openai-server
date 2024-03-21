@@ -1,7 +1,9 @@
 import { GenerativeModel } from '../lib/google/vertex';
 
 export const AiResponder = async (text: string): Promise<string> => {
+    
     let completeResponse = '';
+
     const responseStream = await GenerativeModel.generateContentStream({
         contents: [{
             role: "user",
@@ -17,6 +19,7 @@ export const AiResponder = async (text: string): Promise<string> => {
             completeResponse += chunks.candidates[0].content.parts[0].text;
         }
     }
-    
+
     return completeResponse;
+
 }

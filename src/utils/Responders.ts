@@ -31,6 +31,6 @@ export class Cookie {
         sameSite: 'none',
         secure: true,
       })
-      .json({ success: true, token });
+      .json({ success: true, data: user });
   }
 }
